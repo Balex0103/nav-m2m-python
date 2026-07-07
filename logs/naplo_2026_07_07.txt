@@ -58,3 +58,43 @@ NameError: name 'legujaj_fajl_keresese' is not defined. Did you mean: 'legujabb_
            ^^^^^^^^^^^^^^^^^^^^^
 NameError: name 'legujaj_fajl_keresese' is not defined. Did you mean: 'legujabb_fajl_keresese'?
 
+[2026-07-07 23:21:30] 
+[2026-07-07 23:21:30] ------------------------------------------------------------
+[2026-07-07 23:21:30] [Kapcsolat teszt] eÁFA M2M kapcsolat előellenőrzés indítása...
+[2026-07-07 23:21:30] [Környezet] Aktív környezet: TEST
+[2026-07-07 23:21:30] [Adószám] 12345678
+[2026-07-07 23:21:30] [Kapcsolat teszt] eÁFA v2 QueryTaxCodeCatalog request előállítása...
+[2026-07-07 23:21:30] ✅ [Kapcsolat teszt] eÁFA request sikeresen legenerálva.
+[2026-07-07 23:21:30] [eÁFA URL] https://api-test.eafa.nav.gov.hu/v1/xmlapi/analyticsService/v1/queryTaxCodeCatalog
+[2026-07-07 23:21:30] ❌ [KAPCSOLAT TESZT HIBA] name 'biztonsagos_xml_minta' is not defined
+[2026-07-07 23:21:30] Traceback (most recent call last):
+  File "/Users/balesz/NAV_M2M_Python/gui/workflows.py", line 45, in kapcsolat_teszt_a_hatterben
+    logger.info(f"[XML minta] {biztonsagos_xml_minta(request_xml)}")
+                               ^^^^^^^^^^^^^^^^^^^^^
+NameError: name 'biztonsagos_xml_minta' is not defined
+
+[2026-07-07 23:23:25] 
+[2026-07-07 23:23:25] ------------------------------------------------------------
+[2026-07-07 23:23:25] [Kezdés] Feldolgozás indítása...
+[2026-07-07 23:23:25] [Környezet] Aktív környezet: TEST
+[2026-07-07 23:23:25] [Mappa] Figyelt mappa: /Users/balesz/NAV_M2M_Python/sap_export
+[2026-07-07 23:23:25] ❌ [KRITIKUS HIBA] legujabb_fajl_keresese() missing 1 required positional argument: 'megfigyelt_mappa'
+[2026-07-07 23:23:25] Traceback (most recent call last):
+  File "/Users/balesz/NAV_M2M_Python/gui/workflows.py", line 99, in feldolgozas_a_hatterben
+    fajl = legujabb_fajl_keresese()
+TypeError: legujabb_fajl_keresese() missing 1 required positional argument: 'megfigyelt_mappa'
+
+[2026-07-07 23:25:17] ⚠️ Nincs még megjeleníthető Excel előnézet.
+[2026-07-07 23:25:18] ⚠️ Nincs még megjeleníthető XML előnézet.
+[2026-07-07 23:25:19] ⚠️ Nincs még megjeleníthető Excel előnézet.
+[2026-07-07 23:26:08] 
+[2026-07-07 23:26:08] ------------------------------------------------------------
+[2026-07-07 23:26:08] [Kezdés] Feldolgozás indítása...
+[2026-07-07 23:26:08] [Környezet] Aktív környezet: TEST
+[2026-07-07 23:26:08] [Mappa] Figyelt mappa: /Users/balesz/NAV_M2M_Python/sap_export
+[2026-07-07 23:26:08] ❌ [KRITIKUS HIBA] legujabb_fajl_keresese() missing 1 required positional argument: 'megfigyelt_mappa'
+[2026-07-07 23:26:08] Traceback (most recent call last):
+  File "/Users/balesz/NAV_M2M_Python/gui/workflows.py", line 99, in feldolgozas_a_hatterben
+    fajl = legujabb_fajl_keresese()
+TypeError: legujabb_fajl_keresese() missing 1 required positional argument: 'megfigyelt_mappa'
+

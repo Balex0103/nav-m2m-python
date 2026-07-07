@@ -5,7 +5,7 @@ from typing import Any, cast
 
 import customtkinter as ctk
 
-from services.ui_runtime import log_uzenet, ablak
+from utils.logger import logger
 from core.analitika import dataframe_balra_zart_szoveg
 from config import *
 
@@ -14,11 +14,11 @@ utolso_flat_dataframe = None
 utolso_xml_tartalom = ''
 utolso_fajl = ''
 
-def xml_preview_megnyitas() -> None:
+def xml_preview_megnyitas(ablak: Any) -> None:
     global utolso_xml_tartalom
 
     if not utolso_xml_tartalom.strip():
-        log_uzenet("⚠️ Nincs még megjeleníthető XML előnézet.")
+        logger.warning("⚠️ Nincs még megjeleníthető XML előnézet.")
         return
 
     ablak2 = ctk.CTkToplevel(ablak)
@@ -30,11 +30,11 @@ def xml_preview_megnyitas() -> None:
     cast(Any, textbox).insert("0.0", utolso_xml_tartalom)
     cast(Any, textbox).configure(state="disabled")
 
-def excel_preview_megnyitas() -> None:
+def excel_preview_megnyitas(ablak: Any) -> None:
     global utolso_lapok_dict, utolso_fajl
 
     if not utolso_lapok_dict:
-        log_uzenet("⚠️ Nincs még megjeleníthető Excel előnézet.")
+        logger.warning("⚠️ Nincs még megjeleníthető Excel előnézet.")
         return
 
     ablak2 = ctk.CTkToplevel(ablak)
