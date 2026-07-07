@@ -4,9 +4,9 @@
 # Nem tartalmaz üzleti logikát — csak összefogja az ablakot és a tabokat.
 
 from __future__ import annotations
+from tkinter import messagebox
 
 import logging
-from typing import Any
 
 import customtkinter as ctk
 
@@ -152,10 +152,10 @@ class NavM2MApp(ctk.CTk):
 
     def _billentyukombinacok_regisztralasa(self) -> None:
         """Globális billentyűkombinációk."""
-        # macOS: Cmd+Q = kilépés
-        self.bind("<Command-q>", lambda e: self._kilep_kezeles())
-        # Cmd+W = ablak bezárása
-        self.bind("<Command-w>", lambda e: self._kilep_kezeles())
+        
+        # JAVÍTOTT (Pylance-barát):
+        self.bind("<Command-q>", lambda event: self._kilep_kezeles())
+        self.bind("<Command-w>", lambda event: self._kilep_kezeles())
 
     def _kilep_kezeles(self) -> None:
         """Alkalmazás biztonságos bezárása."""

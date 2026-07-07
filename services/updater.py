@@ -13,7 +13,7 @@ import logging
 import os
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from typing import Optional
+from typing import Optional, Any, cast
 
 import requests
 
@@ -78,12 +78,12 @@ class UpdaterService:
         Ha a GitHub nem elérhető, a cache-ből dolgozik.
         """
         if not self._ellenorzes_szukseges():
-            logger.debug("Verzióellenőrzés kihagyva (nem telt el %d óra).",
-                         ELLENORZES_GYAKORISAG_ORA)
+            logger.debug("Verzióellenőrzés kihagyva (nem telt el %d óra).", ELLENORZES_GYAKORISAG_ORA)
             return self._cache_betoltese()
 
         logger.info("Verzióellenőrzés indul (eVAT + M2M)...")
         cache = self._cache_betoltese_dict()
+        korabbi_verziok = cast(list[dict[str, Any]], cache.get("verzio_lista", []))
         eredmenyek: list[VerzioInfo] = []
 
         for repo_nev, url in [
@@ -92,14 +92,22 @@ class UpdaterService:
         ]:
             info = self._commit_lekerdezese(repo_nev, url)
             if info:
-                korabbi_sha = cache.get(repo_nev, {}).get("sha", "")
+                # Kikeressük a korábbi SHA-t a cache-ből
+                korabbi_sha = ""
+                for v in korabbi_verziok:
+                    if str(v.get("repo_nev", "")) == repo_nev:
+                        korabbi_sha = str(v.get("commit_sha", ""))
+                        break
+                
                 info.frissites_van = (
                     bool(korabbi_sha) and info.commit_sha != korabbi_sha
                 )
                 eredmenyek.append(info)
 
-        self._cache_mentese(eredmenyek)
-        self._idopont_mentese()
+        if eredmenyek:
+            self._cache_mentese(eredmenyek)
+            self._idopont_mentese()
+            
         return eredmenyek
 
     def frissites_van_e(self) -> bool:
@@ -109,9 +117,10 @@ class UpdaterService:
     def utolso_ellenorzes_ideje(self) -> Optional[str]:
         """Visszaadja az utolsó ellenőrzés időpontját olvasható formában."""
         try:
-            with open(self.cache_fajl, "r") as f:
-                data = json.load(f)
-                return data.get("utolso_ellenorzes")
+            with open(self.cache_fajl, "r", encoding="utf-8") as f:
+                data = cast(dict[str, Any], json.load(f))
+                val = data.get("utolso_ellenorzes")
+                return str(val) if val else None
         except Exception:
             return None
 
@@ -120,13 +129,15 @@ class UpdaterService:
     # ------------------------------------------------------------------
 
     def _ellenorzes_szukseges(self) -> bool:
-        """Megvizsgálja, hogy eltelt-e az ellenőrzés gyakorisága."""
+        """Megvizsgálja, hogy eltelt-e az ellenőrzés gyakorisága (24 óra)."""
         try:
-            with open(self.cache_fajl, "r") as f:
-                data = json.load(f)
-                last_check = data.get("utolso_ellenorzes", "")
-                if last_check:
-                    return False
+            with open(self.cache_fajl, "r", encoding="utf-8") as f:
+                data = cast(dict[str, Any], json.load(f))
+                last_check_str = str(data.get("utolso_ellenorzes", ""))
+                if last_check_str:
+                    last_check_date = datetime.fromisoformat(last_check_str)
+                    if datetime.now() - last_check_date < timedelta(hours=ELLENORZES_GYAKORISAG_ORA):
+                        return False
         except Exception:
             pass
         return True
@@ -134,16 +145,18 @@ class UpdaterService:
     def _cache_betoltese(self) -> list[VerzioInfo]:
         """Betölti a VerzioInfo listát a cache-ből."""
         try:
-            with open(self.cache_fajl, "r") as f:
-                data = json.load(f)
-                verzio_lista = []
-                for item in data.get("verzio_lista", []):
+            with open(self.cache_fajl, "r", encoding="utf-8") as f:
+                data = cast(dict[str, Any], json.load(f))
+                verzio_lista_nyers = cast(list[dict[str, Any]], data.get("verzio_lista", []))
+                
+                verzio_lista: list[VerzioInfo] = []
+                for item in verzio_lista_nyers:
                     verzio_lista.append(VerzioInfo(
-                        repo_nev=item.get("repo_nev", ""),
-                        commit_sha=item.get("commit_sha", ""),
-                        commit_datum=item.get("commit_datum", ""),
-                        commit_uzenet=item.get("commit_uzenet", ""),
-                        frissites_van=item.get("frissites_van", False),
+                        repo_nev=str(item.get("repo_nev", "")),
+                        commit_sha=str(item.get("commit_sha", "")),
+                        commit_datum=str(item.get("commit_datum", "")),
+                        commit_uzenet=str(item.get("commit_uzenet", "")),
+                        frissites_van=bool(item.get("frissites_van", False)),
                     ))
                 return verzio_lista
         except Exception:
@@ -152,27 +165,27 @@ class UpdaterService:
     def _cache_betoltese_dict(self) -> dict[str, Any]:
         """Betölti a cache-t szótárként."""
         try:
-            with open(self.cache_fajl, "r") as f:
-                return json.load(f)
+            with open(self.cache_fajl, "r", encoding="utf-8") as f:
+                return cast(dict[str, Any], json.load(f))
         except Exception:
             return {}
 
     def _cache_mentese(self, verzio_lista: list[VerzioInfo]) -> None:
-        """Menti a VerzioInfo listát a cache-be."""
+        """Menti a VerzioInfo listát a cache-be, megtartva az utolsó ellenőrzés idejét."""
         try:
-            data = {
-                "verzio_lista": [
-                    {
-                        "repo_nev": v.repo_nev,
-                        "commit_sha": v.commit_sha,
-                        "commit_uzenet": v.commit_uzenet,
-                        "frissites_van": v.frissites_van,
-                    }
-                    for v in verzio_lista
-                ]
-            }
-            with open(self.cache_fajl, "w") as f:
-                json.dump(data, f, indent=2)
+            data = self._cache_betoltese_dict()
+            data["verzio_lista"] = [
+                {
+                    "repo_nev": v.repo_nev,
+                    "commit_sha": v.commit_sha,
+                    "commit_datum": v.commit_datum,
+                    "commit_uzenet": v.commit_uzenet,
+                    "frissites_van": v.frissites_van,
+                }
+                for v in verzio_lista
+            ]
+            with open(self.cache_fajl, "w", encoding="utf-8") as f:
+                json.dump(data, f, indent=2, ensure_ascii=False)
         except Exception as e:
             logger.warning("Cache mentés sikertelen: %s", e)
 
@@ -181,8 +194,8 @@ class UpdaterService:
         try:
             data = self._cache_betoltese_dict()
             data["utolso_ellenorzes"] = datetime.now().isoformat()
-            with open(self.cache_fajl, "w") as f:
-                json.dump(data, f, indent=2)
+            with open(self.cache_fajl, "w", encoding="utf-8") as f:
+                json.dump(data, f, indent=2, ensure_ascii=False)
         except Exception as e:
             logger.warning("Időpont mentés sikertelen: %s", e)
 
@@ -192,14 +205,17 @@ class UpdaterService:
             resp = requests.get(commits_url, timeout=self.timeout)
             resp.raise_for_status()
             data = resp.json()
+            
             if isinstance(data, list) and len(data) > 0:
-                commit = data[0]
-                commit_datum = commit.get("commit", {}).get("author", {}).get("date", "")
+                commit_obj = cast(dict[str, Any], data[0])
+                commit_data = cast(dict[str, Any], commit_obj.get("commit", {}))
+                author_data = cast(dict[str, Any], commit_data.get("author", {}))
+                
                 return VerzioInfo(
                     repo_nev=repo_nev,
-                    commit_sha=commit.get("sha", "")[:7],
-                    commit_datum=commit_datum,
-                    commit_uzenet=commit.get("commit", {}).get("message", ""),
+                    commit_sha=str(commit_obj.get("sha", ""))[:7],
+                    commit_datum=str(author_data.get("date", "")),
+                    commit_uzenet=str(commit_data.get("message", "")),
                     frissites_van=False,
                 )
         except Exception as e:

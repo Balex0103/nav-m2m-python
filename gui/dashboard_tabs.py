@@ -11,10 +11,13 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, Callable, Optional
+import datetime
+import urllib.parse
+import webbrowser
+from typing import Any, Callable, Optional, cast
+from tkinter import StringVar, messagebox
 
 import customtkinter as ctk
-from tkinter import messagebox
 
 from gui.workflows import automatikus_feldolgozas_inditasa, kapcsolat_teszt_inditasa
 
@@ -61,8 +64,8 @@ class DashboardTabs(ctk.CTkFrame):
         self._helpdesk_tab_felep(tab_helpdesk)
 
         from utils.logger import Logger
-        def log_callback(msg, tag):
-            if hasattr(self, 'log_ablak'):
+        def log_callback(msg: str, tag: Optional[str]) -> None:
+            if hasattr(self, 'log_ablak') and self.log_ablak is not None:
                 if tag:
                     self.log_ablak.insert("end", msg + "\n", tag)
                 else:
@@ -145,7 +148,7 @@ class DashboardTabs(ctk.CTkFrame):
         self.xml_elonezet.pack(fill="both", expand=True, padx=4, pady=4)
 
     # ------------------------------------------------------------------
-    # Privát tab felépítő metódusok (stub implementációk)
+    # 2. Adózási állapot tab
     # ------------------------------------------------------------------
 
     def _adozas_tab_felep(self, tab: Any) -> None:
@@ -160,12 +163,12 @@ class DashboardTabs(ctk.CTkFrame):
         
         try:
             config = nav_config_osszeallitasa(
-                tech_user=self.entry_tech_user.get() if hasattr(self, 'entry_tech_user') else "",
-                password=self.entry_jelszo.get() if hasattr(self, 'entry_jelszo') else "",
-                sign_key=self.entry_sign_kulcs.get() if hasattr(self, 'entry_sign_kulcs') else "",
-                exchange_key=self.entry_xml_kulcs.get() if hasattr(self, 'entry_xml_kulcs') else "",
-                tax_number=self.entry_adoszam.get() if hasattr(self, 'entry_adoszam') else "",
-                environment=self.combo_kornyezet.get() if hasattr(self, 'combo_kornyezet') else "TEST"
+                tech_user=self.entry_tech_user.get() if hasattr(self, 'entry_tech_user') and self.entry_tech_user is not None else "",
+                password=self.entry_jelszo.get() if hasattr(self, 'entry_jelszo') and self.entry_jelszo is not None else "",
+                sign_key=self.entry_sign_kulcs.get() if hasattr(self, 'entry_sign_kulcs') and self.entry_sign_kulcs is not None else "",
+                exchange_key=self.entry_xml_kulcs.get() if hasattr(self, 'entry_xml_kulcs') and self.entry_xml_kulcs is not None else "",
+                tax_number=self.entry_adoszam.get() if hasattr(self, 'entry_adoszam') and self.entry_adoszam is not None else "",
+                environment=self.combo_kornyezet.get() if hasattr(self, 'combo_kornyezet') and self.combo_kornyezet is not None else "TEST"
             )
             adoszam_rovid = config.tax_number if config.tax_number else "--------"
             ceg_nev = "M2M Partner Vállalat Kft." if config.tax_number else "Nincs konfigurált vállalat"
@@ -192,6 +195,10 @@ class DashboardTabs(ctk.CTkFrame):
         lbl_egyenleg_value = ctk.CTkLabel(statusz_keret, text="Lekérdezés folyamatban...", text_color="#00FF88", font=ctk.CTkFont(size=12, weight="bold"))
         lbl_egyenleg_value.grid(row=3, column=1, padx=15, pady=(5, 10), sticky="w")
 
+    # ------------------------------------------------------------------
+    # 3. Határidők tab
+    # ------------------------------------------------------------------
+
     def _hataridok_tab_felep(self, tab: Any) -> None:
         """Határidők tab felépítése."""
         import datetime
@@ -215,9 +222,17 @@ class DashboardTabs(ctk.CTkFrame):
         )
         lbl_hatar_info.pack(pady=5, padx=15, anchor="w")
 
+    # ------------------------------------------------------------------
+    # 4. Előzmények tab
+    # ------------------------------------------------------------------
+
     def _elozmeny_tab_felep(self, tab: Any) -> None:
         """Előzmények tab felépítése."""
         ctk.CTkLabel(tab, text="Előzmények", font=ctk.CTkFont(size=14, weight="bold")).pack(pady=20)
+
+    # ------------------------------------------------------------------
+    # 5. Beállítások tab
+    # ------------------------------------------------------------------
 
     def _beallitas_tab_felep(self, tab: Any) -> None:
         """Beállítások tab felépítése."""
@@ -269,6 +284,10 @@ class DashboardTabs(ctk.CTkFrame):
         )
         self.btn_kapcsolat_teszt.pack(side="left", padx=8)
 
+    # ------------------------------------------------------------------
+    # 6. Helpdesk tab
+    # ------------------------------------------------------------------
+
     def _helpdesk_tab_felep(self, tab: Any) -> None:
         """Helpdesk tab felépítése."""
         helpdesk_keret = ctk.CTkFrame(tab, corner_radius=10, fg_color="#1e1e1e")
@@ -283,13 +302,13 @@ class DashboardTabs(ctk.CTkFrame):
 
         def hiba_bejelentes_vegrehajtasa() -> None:
             import datetime, urllib.parse, webbrowser
-            problema_szoveg = self.entry_hiba_leiras.get("0.0", "end").strip()
+            problema_szoveg = cast(str, self.entry_hiba_leiras.get("1.0", "end")).strip()
             if not problema_szoveg or "ide részletesen írd le" in problema_szoveg:
                 messagebox.showerror("Helpdesk hiba", "Üres leírást nem küldhetsz be!")
                 return
 
             fejleszto_email = "balint.papp@cegnev.hu"
-            adoszam = getattr(self, 'entry_adoszam', ctk.StringVar(value="")).get()
+            adoszam = self.entry_adoszam.get() if hasattr(self, 'entry_adoszam') and self.entry_adoszam is not None else ""
             targy = f"NAV M2M Asszisztens Diagnosztika - Adószám: {adoszam}"
 
             test_szoveg = (
@@ -303,8 +322,9 @@ class DashboardTabs(ctk.CTkFrame):
                 f"Generált requestSignature verzió: SHA3-512 ok\n"
             )
 
-            self.clipboard_clear()
-            self.clipboard_append(test_szoveg)
+            toplevel = cast(Any, self.winfo_toplevel())
+            toplevel.clipboard_clear()
+            toplevel.clipboard_append(test_szoveg)
 
             mailto_url = f"mailto:{fejleszto_email}?subject={urllib.parse.quote(targy)}&body={urllib.parse.quote('A teljes diagnosztikai naplót a szoftver automatikusan a vágólapra másolta. Kérlek nyomj egy Ctrl+V-t ide a szövegtörzsbe!')}"
             
@@ -326,58 +346,90 @@ class DashboardTabs(ctk.CTkFrame):
         btn_kuldes.pack(pady=15)
 
     # ------------------------------------------------------------------
-    # Privát callback metódusok (stub implementációk)
+    # Háttérfolyamat-indító callback metódusok
     # ------------------------------------------------------------------
 
-
     def _kapcsolat_teszt_inditasa(self) -> None:
-        if not hasattr(self, 'btn_kapcsolat_teszt'):
+        if not hasattr(self, 'btn_kapcsolat_teszt') or self.btn_kapcsolat_teszt is None:
             return
         
         self.btn_kapcsolat_teszt.configure(state="disabled", text="⏳ Kapcsolat teszt folyamatban...")
-        if hasattr(self, 'btn_feldolgoz'):
+        if hasattr(self, 'btn_feldolgoz') and self.btn_feldolgoz is not None:
             self.btn_feldolgoz.configure(state="disabled")
 
-        def reset_buttons():
-            self.btn_kapcsolat_teszt.configure(state="normal", text="NAV kapcsolat teszt")
-            if hasattr(self, 'btn_feldolgoz'):
+        def reset_buttons() -> None:
+            if hasattr(self, 'btn_kapcsolat_teszt') and self.btn_kapcsolat_teszt is not None:
+                self.btn_kapcsolat_teszt.configure(state="normal", text="NAV kapcsolat teszt")
+            if hasattr(self, 'btn_feldolgoz') and self.btn_feldolgoz is not None:
                 self.btn_feldolgoz.configure(state="normal")
 
+        def statusz_updater(msg: str, color: str) -> None:
+            if hasattr(self, 'fajl_label') and self.fajl_label is not None:
+                self.fajl_label.configure(text=msg, text_color=color)
+
+        def error_popup_wrapper(title: str, msg: str) -> None:
+            messagebox.showerror(title, msg)
+
+        tech_user = self.entry_tech_user.get() if hasattr(self, 'entry_tech_user') and self.entry_tech_user is not None else ""
+        password = self.entry_jelszo.get() if hasattr(self, 'entry_jelszo') and self.entry_jelszo is not None else ""
+        sign_key = self.entry_sign_kulcs.get() if hasattr(self, 'entry_sign_kulcs') and self.entry_sign_kulcs is not None else ""
+        exchange_key = self.entry_xml_kulcs.get() if hasattr(self, 'entry_xml_kulcs') and self.entry_xml_kulcs is not None else ""
+        tax_number = self.entry_adoszam.get() if hasattr(self, 'entry_adoszam') and self.entry_adoszam is not None else ""
+        environment = self.combo_kornyezet.get() if hasattr(self, 'combo_kornyezet') and self.combo_kornyezet is not None else "TEST"
+
         kapcsolat_teszt_inditasa(
-            tech_user=self.entry_tech_user.get(),
-            password=self.entry_jelszo.get(),
-            sign_key=self.entry_sign_kulcs.get(),
-            exchange_key=self.entry_xml_kulcs.get(),
-            tax_number=self.entry_adoszam.get(),
-            environment=self.combo_kornyezet.get(),
-            allapot_uzenet=lambda msg, color: self.fajl_label.configure(text=msg, text_color=color) if hasattr(self, 'fajl_label') else None,
-            show_error_popup=lambda title, msg: messagebox.showerror(title, msg),
+            tech_user=tech_user,
+            password=password,
+            sign_key=sign_key,
+            exchange_key=exchange_key,
+            tax_number=tax_number,
+            environment=environment,
+            allapot_uzenet=statusz_updater,
+            show_error_popup=error_popup_wrapper,
             reset_buttons=reset_buttons
         )
 
     def _feldolgozas_inditas(self) -> None:
         """Feldolgozás indítása callback."""
-        if hasattr(self, 'btn_feldolgoz'):
+        if hasattr(self, 'btn_feldolgoz') and self.btn_feldolgoz is not None:
             self.btn_feldolgoz.configure(state="disabled", text="⏳ Feldolgozás folyamatban...")
-        if hasattr(self, 'btn_kapcsolat_teszt'):
+        if hasattr(self, 'btn_kapcsolat_teszt') and self.btn_kapcsolat_teszt is not None:
             self.btn_kapcsolat_teszt.configure(state="disabled")
 
-        def reset_buttons():
-            if hasattr(self, 'btn_feldolgoz'):
-                self.btn_feldolgoz.configure(state="normal", text="▶️  Feldolgozás indítása")
-            if hasattr(self, 'btn_kapcsolat_teszt'):
-                self.btn_kapcsolat_teszt.configure(state="normal")
+        def reset_buttons() -> None:
+            if hasattr(self, 'btn_feldolgoz') and self.btn_feldolgoz is not None:
+                self.btn_feldolgoz.configure(state="normal", text="▶️  Mappa ellenőrzése és Feldolgozás indítása")
+            if hasattr(self, 'btn_kapcsolat_teszt') and self.btn_kapcsolat_teszt is not None:
+                self.btn_kapcsolat_teszt.configure(state="normal", text="NAV kapcsolat teszt")
+
+        def statusz_updater(msg: str, color: str) -> None:
+            if hasattr(self, 'fajl_label') and self.fajl_label is not None:
+                self.fajl_label.configure(text=msg, text_color=color)
+
+        def error_popup_wrapper(title: str, msg: str) -> None:
+            messagebox.showerror(title, msg)
+
+        def yes_no_popup_wrapper(title: str, msg: str) -> bool:
+            return bool(messagebox.askyesno(title, msg))
+
+        tech_user = self.entry_tech_user.get() if hasattr(self, 'entry_tech_user') and self.entry_tech_user is not None else ""
+        password = self.entry_jelszo.get() if hasattr(self, 'entry_jelszo') and self.entry_jelszo is not None else ""
+        sign_key = self.entry_sign_kulcs.get() if hasattr(self, 'entry_sign_kulcs') and self.entry_sign_kulcs is not None else ""
+        exchange_key = self.entry_xml_kulcs.get() if hasattr(self, 'entry_xml_kulcs') and self.entry_xml_kulcs is not None else ""
+        tax_number = self.entry_adoszam.get() if hasattr(self, 'entry_adoszam') and self.entry_adoszam is not None else ""
+        environment = self.combo_kornyezet.get() if hasattr(self, 'combo_kornyezet') and self.combo_kornyezet is not None else "TEST"
+        eafa_feltoltes = bool(self.chk_eafa_feltoltes.get()) if hasattr(self, 'chk_eafa_feltoltes') and self.chk_eafa_feltoltes is not None else False
 
         automatikus_feldolgozas_inditasa(
-            tech_user=self.entry_tech_user.get() if hasattr(self, 'entry_tech_user') else "",
-            password=self.entry_jelszo.get() if hasattr(self, 'entry_jelszo') else "",
-            sign_key=self.entry_sign_kulcs.get() if hasattr(self, 'entry_sign_kulcs') else "",
-            exchange_key=self.entry_xml_kulcs.get() if hasattr(self, 'entry_xml_kulcs') else "",
-            tax_number=self.entry_adoszam.get() if hasattr(self, 'entry_adoszam') else "",
-            environment=self.combo_kornyezet.get() if hasattr(self, 'combo_kornyezet') else "TEST",
-            eafa_feltoltes=bool(self.chk_eafa_feltoltes.get()) if hasattr(self, 'chk_eafa_feltoltes') else False,
-            allapot_uzenet=lambda msg, color: self.fajl_label.configure(text=msg, text_color=color) if hasattr(self, 'fajl_label') else None,
-            show_error_popup=lambda title, msg: messagebox.showerror(title, msg),
-            ask_yes_no_popup=lambda title, msg: messagebox.askyesno(title, msg),
+            tech_user=tech_user,
+            password=password,
+            sign_key=sign_key,
+            exchange_key=exchange_key,
+            tax_number=tax_number,
+            environment=environment,
+            eafa_feltoltes=eafa_feltoltes,
+            allapot_uzenet=statusz_updater,
+            show_error_popup=error_popup_wrapper,
+            ask_yes_no_popup=yes_no_popup_wrapper,
             reset_buttons=reset_buttons
         )

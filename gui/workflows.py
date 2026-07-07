@@ -2,9 +2,10 @@ from __future__ import annotations
 
 import datetime
 import os
+import re
 import threading
 import traceback
-from typing import Any
+from typing import Any, Callable, Optional
 
 import pandas as pd
 
@@ -18,7 +19,33 @@ from utils.logger import logger
 from services.nav_session import *
 from gui import previews
 
-def kapcsolat_teszt_a_hatterben(tech_user: str, password: str, sign_key: str, exchange_key: str, tax_number: str, environment: str, allapot_uzenet: Any, show_error_popup: Any) -> None:
+# --- UTILITY MODUL INTEGRÁCIÓ A BIZTONSÁGOS NAPLÓZÁSHOZ ---
+def biztonsagos_xml_minta(xml_text: str, hossz: int = 900) -> str:
+    redacted = re.sub(
+        r"(<(?:[^:>]+:)?passwordHash[^>]*>)(.*?)(</(?:[^:>]+:)?passwordHash>)",
+        r"\1***REDACTED***\3",
+        xml_text,
+        flags=re.DOTALL,
+    )
+    redacted = re.sub(
+        r"(<(?:[^:>]+:)?requestSignature[^>]*>)(.*?)(</(?:[^:>]+:)?requestSignature>)",
+        r"\1***REDACTED***\3",
+        redacted,
+        flags=re.DOTALL,
+    )
+    return redacted[:hossz]
+
+
+def kapcsolat_teszt_a_hatterben(
+    tech_user: str, 
+    password: str, 
+    sign_key: str, 
+    exchange_key: str, 
+    tax_number: str, 
+    environment: str, 
+    allapot_uzenet: Callable[[str, str], None], 
+    show_error_popup: Callable[[str, str], None]
+) -> None:
     try:
         logger.info("")
         logger.divider()
@@ -78,7 +105,18 @@ def kapcsolat_teszt_a_hatterben(tech_user: str, password: str, sign_key: str, ex
         pass
         
 
-def feldolgozas_a_hatterben(tech_user: str, password: str, sign_key: str, exchange_key: str, tax_number: str, environment: str, eafa_feltoltes: bool, allapot_uzenet: Any, show_error_popup: Any, ask_yes_no_popup: Any) -> None:
+def feldolgozas_a_hatterben(
+    tech_user: str, 
+    password: str, 
+    sign_key: str, 
+    exchange_key: str, 
+    tax_number: str, 
+    environment: str, 
+    eafa_feltoltes: bool, 
+    allapot_uzenet: Callable[[str, str], None], 
+    show_error_popup: Callable[[str, str], None], 
+    ask_yes_no_popup: Callable[[str, str], bool]
+) -> None:
 
     try:
         logger.info("")
@@ -96,7 +134,8 @@ def feldolgozas_a_hatterben(tech_user: str, password: str, sign_key: str, exchan
         logger.info(f"[Környezet] Aktív környezet: {config.environment}")
         logger.info(f"[Mappa] Figyelt mappa: {MEGFIGYELT_MAPPA}")
 
-        fajl = legujabb_fajl_keresese()
+        # Úgy hívd meg, hogy átadod neki a megfigyelt mappa útvonalát:
+        fajl = legujabb_fajl_keresese(MEGFIGYELT_MAPPA)
         if not fajl:
             hiba = f"Nincs feldolgozható .xlsx vagy .csv fájl a '{MEGFIGYELT_MAPPA}' mappában."
             logger.info(f"❌ [HIBA] {hiba}")
@@ -258,7 +297,8 @@ def feldolgozas_a_hatterben(tech_user: str, password: str, sign_key: str, exchan
             logger.info("ℹ️ [eÁFA] Valódi kulcsok hiányoznak, hálózati feltöltés kihagyva.")
             logger.info("ℹ️ [eÁFA] Az alkalmazás jelenleg prototípus / előellenőrzés módban fut.")
             allapot_uzenet("Állapot: eÁFA előellenőrzés kész", "#F1C40F")
-        elif not eafa_feltoltes_engedelyezve(config):
+        
+        elif not (eafa_feltoltes and config.environment == "TEST"):
             logger.info("ℹ️ [eÁFA] Valódi feltöltés nincs engedélyezve a jelölőnégyzettel.")
             logger.info("ℹ️ [eÁFA] Biztonsági okból PROD környezetben ez a prototípus nem tölt fel automatikusan.")
             allapot_uzenet("Állapot: Diagnosztikai eredmény elkészült", "#F1C40F")
@@ -340,19 +380,40 @@ def feldolgozas_a_hatterben(tech_user: str, password: str, sign_key: str, exchan
         pass
         
 
-def automatikus_feldolgozas_inditasa(tech_user: str, password: str, sign_key: str, exchange_key: str, tax_number: str, environment: str, eafa_feltoltes: bool, allapot_uzenet: Any, show_error_popup: Any, ask_yes_no_popup: Any, reset_buttons: Any) -> None:
-    def _run():
+def automatikus_feldolgozas_inditasa(
+    tech_user: str, 
+    password: str, 
+    sign_key: str, 
+    exchange_key: str, 
+    tax_number: str, 
+    environment: str, 
+    eafa_feltoltes: bool, 
+    allapot_uzenet: Callable[[str, str], None], 
+    show_error_popup: Callable[[str, str], None], 
+    ask_yes_no_popup: Callable[[str, str], bool], 
+    reset_buttons: Optional[Callable[[], None]]
+) -> None:
+    def _run() -> None:
         feldolgozas_a_hatterben(tech_user, password, sign_key, exchange_key, tax_number, environment, eafa_feltoltes, allapot_uzenet, show_error_popup, ask_yes_no_popup)
-        if reset_buttons:
+        if reset_buttons is not None:
             reset_buttons()
     worker = threading.Thread(target=_run, daemon=True)
     worker.start()
 
-def kapcsolat_teszt_inditasa(tech_user: str, password: str, sign_key: str, exchange_key: str, tax_number: str, environment: str, allapot_uzenet: Any, show_error_popup: Any, reset_buttons: Any) -> None:
-    def _run():
+def kapcsolat_teszt_inditasa(
+    tech_user: str, 
+    password: str, 
+    sign_key: str, 
+    exchange_key: str, 
+    tax_number: str, 
+    environment: str, 
+    allapot_uzenet: Callable[[str, str], None], 
+    show_error_popup: Callable[[str, str], None], 
+    reset_buttons: Optional[Callable[[], None]]
+) -> None:
+    def _run() -> None:
         kapcsolat_teszt_a_hatterben(tech_user, password, sign_key, exchange_key, tax_number, environment, allapot_uzenet, show_error_popup)
-        if reset_buttons:
+        if reset_buttons is not None:
             reset_buttons()
     worker = threading.Thread(target=_run, daemon=True)
     worker.start()
-
