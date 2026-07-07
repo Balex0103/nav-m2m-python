@@ -1,0 +1,26 @@
+<?xml version="1.0" ?>
+<VatDeclaration xmlns="http://schemas.nav.gov.hu/eAFA/1.0/declaration">
+    <Header>
+        <TaxpayerId>12345678</TaxpayerId>
+        <DeclarationPeriod>2026-04</DeclarationPeriod>
+        <CreationDate>2026-04-16</CreationDate>
+    </Header>
+    <Analytics>
+        <Invoice>
+            <InvoiceNumber>SAP-INV-001</InvoiceNumber>
+            <FulfillmentDate>2026-04-10</FulfillmentDate>
+            <PartnerTaxNumber>12345678</PartnerTaxNumber>
+            <NavVatCode>DOM_L_GENERAL</NavVatCode>
+            <NetAmount>100000</NetAmount>
+            <VatAmount>27000</VatAmount>
+        </Invoice>
+        <Invoice>
+            <InvoiceNumber>SAP-INV-002</InvoiceNumber>
+            <FulfillmentDate>2026-04-12</FulfillmentDate>
+            <PartnerTaxNumber>87654321</PartnerTaxNumber>
+            <NavVatCode>EXP_REVERSE_CHARGE</NavVatCode>
+            <NetAmount>50000</NetAmount>
+            <VatAmount>0</VatAmount>
+        </Invoice>
+    </Analytics>
+</VatDeclaration>

@@ -1,0 +1,175 @@
+[2026-05-27 09:34:13] 
+[2026-05-27 09:34:13] ------------------------------------------------------------
+[2026-05-27 09:34:13] [Kezdés] Feldolgozás indítása...
+[2026-05-27 09:34:13] ❌ [KONFIG HIBA] Az adószám kötelező.
+[2026-05-27 09:34:21] 
+[2026-05-27 09:34:21] ------------------------------------------------------------
+[2026-05-27 09:34:21] [Kezdés] Feldolgozás indítása...
+[2026-05-27 09:34:21] ❌ [KONFIG HIBA] Az adószámnak pontosan 8 számjegyből kell állnia.
+[2026-05-27 09:35:01] 
+[2026-05-27 09:35:01] ------------------------------------------------------------
+[2026-05-27 09:35:01] [Kezdés] Feldolgozás indítása...
+[2026-05-27 09:35:01] [Környezet] Aktív környezet: TEST
+[2026-05-27 09:35:01] [Mappa] Figyelt mappa: sap_export
+[2026-05-27 09:35:01] ✅ [Fájl] Megtalálva: SAP_export.xlsx
+[2026-05-27 09:35:01] [Beolvasás] Forrásfájl beolvasása...
+[2026-05-27 09:35:01] 📊 [Statisztika] Beolvasott sorok: 4 db
+[2026-05-27 09:35:01] 📑 [Oszlopok] Szamlaszam, Teljesites_Datuma, Partner_Adoszam, Netto_Ertek, Afa_Ertek, SAP_Ado_Kod
+[2026-05-27 09:35:01] [Adókód] Adókód mapping: A1->DOM_L_GENERAL, F2->EXP_REVERSE_CHARGE
+[2026-05-27 09:35:01] [Adókód] Fordított áfás tétel érzékelve: 1 sor. Ezeknél külön ellenőrizni kell a levonható/fizetendő pozíciót és az esetleges extra adatmezőket.
+[2026-05-27 09:35:01] [Adókód] Nincs külön vámtarifaszám/cikkszám oszlop a forrásban. Ha a 3-as lapos vagy tételes extra adatszolgáltatás kell, ezt a SAP exportba fel kell venni.
+[2026-05-27 09:35:01] [XML] NAV XML generálása folyamatban...
+[2026-05-27 09:35:01] ✅ [XML] Elkészült: kesz_afa_bevallas.xml
+[2026-05-27 09:35:01] 🟢 [XSD] Az XML hivatalosan is VALID a megadott XSD alapján.
+[2026-05-27 09:35:01] [eÁFA] XML API kliens inicializálása...
+[2026-05-27 09:35:01] [eÁFA] Cél URL: https://api-test.eafa.nav.gov.hu/v1/xmlapi/analyticsService/v1/manageDeclarationUpload
+[2026-05-27 09:35:01] [eÁFA] Bevallás mérete: 5895 byte
+[2026-05-27 09:35:01] [eÁFA] Tömörített feltöltési méret: 840 byte
+[2026-05-27 09:35:01] [eÁFA] Partíciók száma: 1
+[2026-05-27 09:35:01] [eÁFA] Tartalom SHA3-512: 5EBCD9F0E97142EA39217441170A0010434974B15A343734B974DFC73D6E8F324ADBC726E408361C6C506415E1C811FC989A2D9AA70EF6B9CAFC92A277B81B60
+[2026-05-27 09:35:01] [eÁFA XML minta] <?xml version='1.0' encoding='utf-8'?>
+<ManageDeclarationUploadRequest xmlns="http://schemas.nav.gov.hu/EAR/1.0/api" xmlns:common="http://schemas.nav.gov.hu/NTCA/1.0/common"><common:header><common:requestId>M2M_1G048XH78JSCADC</common:requestId><common:timestamp>2026-05-27T07:35:01Z</common:timestamp><common:requestVersion>2.0</common:requestVersion><common:headerVersion>1.0</common:headerVersion></common:header><common:user><common:login>312wdasd</common:login><common:passwordHash cryptoType="SHA-512">***REDACTED***</common:passwordHash><common:taxNumber>12345678</common:taxNumber><common:requestSignature cryptoType="SHA3-512">***REDACTED***</common:requestSignature></common:user><software><softwareId>123456789123456789</softwareId><softwareName>NAV M2M Ado Asszisztens</softwareName><softwareOperation>LOCAL_SOFTWARE</softwareOperation><softwareMainVersion>1.0.0</softwareMainVersion><sof
+[2026-05-27 09:35:01] ℹ️ [eÁFA] Valódi kulcsok hiányoznak, hálózati feltöltés kihagyva.
+[2026-05-27 09:35:01] ℹ️ [eÁFA] Az alkalmazás jelenleg prototípus / előellenőrzés módban fut.
+[2026-05-27 09:35:01] ------------------------------------------------------------
+[2026-05-27 09:35:01] ✅ [Siker] Feldolgozás befejezve.
+[2026-05-27 09:35:17] 
+[2026-05-27 09:35:17] ------------------------------------------------------------
+[2026-05-27 09:35:17] [Kezdés] Feldolgozás indítása...
+[2026-05-27 09:35:17] [Környezet] Aktív környezet: TEST
+[2026-05-27 09:35:17] [Mappa] Figyelt mappa: sap_export
+[2026-05-27 09:35:17] ✅ [Fájl] Megtalálva: SAP_export.xlsx
+[2026-05-27 09:35:17] [Beolvasás] Forrásfájl beolvasása...
+[2026-05-27 09:35:17] 📊 [Statisztika] Beolvasott sorok: 4 db
+[2026-05-27 09:35:17] 📑 [Oszlopok] Szamlaszam, Teljesites_Datuma, Partner_Adoszam, Netto_Ertek, Afa_Ertek, SAP_Ado_Kod
+[2026-05-27 09:35:17] [Adókód] Adókód mapping: A1->DOM_L_GENERAL, F2->EXP_REVERSE_CHARGE
+[2026-05-27 09:35:17] [Adókód] Fordított áfás tétel érzékelve: 1 sor. Ezeknél külön ellenőrizni kell a levonható/fizetendő pozíciót és az esetleges extra adatmezőket.
+[2026-05-27 09:35:17] [Adókód] Nincs külön vámtarifaszám/cikkszám oszlop a forrásban. Ha a 3-as lapos vagy tételes extra adatszolgáltatás kell, ezt a SAP exportba fel kell venni.
+[2026-05-27 09:35:17] [XML] NAV XML generálása folyamatban...
+[2026-05-27 09:35:17] ✅ [XML] Elkészült: kesz_afa_bevallas.xml
+[2026-05-27 09:35:17] 🟢 [XSD] Az XML hivatalosan is VALID a megadott XSD alapján.
+[2026-05-27 09:35:17] [eÁFA] XML API kliens inicializálása...
+[2026-05-27 09:35:17] [eÁFA] Cél URL: https://api-test.eafa.nav.gov.hu/v1/xmlapi/analyticsService/v1/manageDeclarationUpload
+[2026-05-27 09:35:17] [eÁFA] Bevallás mérete: 5895 byte
+[2026-05-27 09:35:17] [eÁFA] Tömörített feltöltési méret: 840 byte
+[2026-05-27 09:35:17] [eÁFA] Partíciók száma: 1
+[2026-05-27 09:35:17] [eÁFA] Tartalom SHA3-512: 5EBCD9F0E97142EA39217441170A0010434974B15A343734B974DFC73D6E8F324ADBC726E408361C6C506415E1C811FC989A2D9AA70EF6B9CAFC92A277B81B60
+[2026-05-27 09:35:17] [eÁFA XML minta] <?xml version='1.0' encoding='utf-8'?>
+<ManageDeclarationUploadRequest xmlns="http://schemas.nav.gov.hu/EAR/1.0/api" xmlns:common="http://schemas.nav.gov.hu/NTCA/1.0/common"><common:header><common:requestId>M2M_TLUBH3HUYFCGWU1</common:requestId><common:timestamp>2026-05-27T07:35:17Z</common:timestamp><common:requestVersion>2.0</common:requestVersion><common:headerVersion>1.0</common:headerVersion></common:header><common:user><common:login>312wdasd</common:login><common:passwordHash cryptoType="SHA-512">***REDACTED***</common:passwordHash><common:taxNumber>12345678</common:taxNumber><common:requestSignature cryptoType="SHA3-512">***REDACTED***</common:requestSignature></common:user><software><softwareId>123456789123456789</softwareId><softwareName>NAV M2M Ado Asszisztens</softwareName><softwareOperation>LOCAL_SOFTWARE</softwareOperation><softwareMainVersion>1.0.0</softwareMainVersion><sof
+[2026-05-27 09:35:17] ℹ️ [eÁFA] Valódi kulcsok hiányoznak, hálózati feltöltés kihagyva.
+[2026-05-27 09:35:17] ℹ️ [eÁFA] Az alkalmazás jelenleg prototípus / előellenőrzés módban fut.
+[2026-05-27 09:35:17] ------------------------------------------------------------
+[2026-05-27 09:35:17] ✅ [Siker] Feldolgozás befejezve.
+[2026-05-27 09:35:22] 
+[2026-05-27 09:35:22] ------------------------------------------------------------
+[2026-05-27 09:35:22] [Kapcsolat teszt] eÁFA M2M kapcsolat előellenőrzés indítása...
+[2026-05-27 09:35:22] [Környezet] Aktív környezet: TEST
+[2026-05-27 09:35:22] [Adószám] 12345678
+[2026-05-27 09:35:22] [Kapcsolat teszt] eÁFA QueryTaxCodeCatalog request előállítása...
+[2026-05-27 09:35:22] ✅ [Kapcsolat teszt] eÁFA request sikeresen legenerálva.
+[2026-05-27 09:35:22] [eÁFA URL] https://api-test.eafa.nav.gov.hu/v1/xmlapi/analyticsService/v1/queryTaxCodeCatalog
+[2026-05-27 09:35:22] [XML minta] <?xml version='1.0' encoding='utf-8'?>
+<QueryTaxCodeCatalogRequest xmlns="http://schemas.nav.gov.hu/EAR/1.0/api" xmlns:common="http://schemas.nav.gov.hu/NTCA/1.0/common"><common:header><common:requestId>M2M_O3RZEQ90AHH2GM0</common:requestId><common:timestamp>2026-05-27T07:35:22Z</common:timestamp><common:requestVersion>2.0</common:requestVersion><common:headerVersion>1.0</common:headerVersion></common:header><common:user><common:login>312wdasd</common:login><common:passwordHash cryptoType="SHA-512">***REDACTED***</common:passwordHash><common:taxNumber>12345678</common:taxNumber><common:requestSignature cryptoType="SHA3-512">***REDACTED***</common:requestSignature></common:user><software><softwareId>123456789123456789</softwareId><softwareName>NAV M2M Ado Asszisztens</softwareName><softwareOperation>LOCAL_SOFTWARE</softwareOperation><softwareMainVersion>1.0.0</softwareMainVersion><softwar
+[2026-05-27 09:35:22] ℹ️ [Kapcsolat teszt] Valódi NAV kulcsok még nincsenek megadva.
+[2026-05-27 09:35:22] ℹ️ [Kapcsolat teszt] A valódi eÁFA hívás kihagyva, csak előellenőrzés történt.
+[2026-05-27 09:36:43] 
+[2026-05-27 09:36:43] ------------------------------------------------------------
+[2026-05-27 09:36:43] [Kezdés] Feldolgozás indítása...
+[2026-05-27 09:36:43] [Környezet] Aktív környezet: PROD
+[2026-05-27 09:36:44] [Mappa] Figyelt mappa: sap_export
+[2026-05-27 09:36:44] ✅ [Fájl] Megtalálva: SAP_export.xlsx
+[2026-05-27 09:36:44] [Beolvasás] Forrásfájl beolvasása...
+[2026-05-27 09:36:44] 📊 [Statisztika] Beolvasott sorok: 4 db
+[2026-05-27 09:36:44] 📑 [Oszlopok] Szamlaszam, Teljesites_Datuma, Partner_Adoszam, Netto_Ertek, Afa_Ertek, SAP_Ado_Kod
+[2026-05-27 09:36:44] [Adókód] Adókód mapping: A1->DOM_L_GENERAL, F2->EXP_REVERSE_CHARGE
+[2026-05-27 09:36:44] [Adókód] Fordított áfás tétel érzékelve: 1 sor. Ezeknél külön ellenőrizni kell a levonható/fizetendő pozíciót és az esetleges extra adatmezőket.
+[2026-05-27 09:36:44] [Adókód] Nincs külön vámtarifaszám/cikkszám oszlop a forrásban. Ha a 3-as lapos vagy tételes extra adatszolgáltatás kell, ezt a SAP exportba fel kell venni.
+[2026-05-27 09:36:44] [XML] NAV XML generálása folyamatban...
+[2026-05-27 09:36:44] ✅ [XML] Elkészült: kesz_afa_bevallas.xml
+[2026-05-27 09:36:44] 🟢 [XSD] Az XML hivatalosan is VALID a megadott XSD alapján.
+[2026-05-27 09:36:44] [eÁFA] XML API kliens inicializálása...
+[2026-05-27 09:36:44] [eÁFA] Cél URL: https://api.eafa.nav.gov.hu/v1/xmlapi/analyticsService/v1/manageDeclarationUpload
+[2026-05-27 09:36:44] [eÁFA] Bevallás mérete: 5895 byte
+[2026-05-27 09:36:44] [eÁFA] Tömörített feltöltési méret: 840 byte
+[2026-05-27 09:36:44] [eÁFA] Partíciók száma: 1
+[2026-05-27 09:36:44] [eÁFA] Tartalom SHA3-512: 5EBCD9F0E97142EA39217441170A0010434974B15A343734B974DFC73D6E8F324ADBC726E408361C6C506415E1C811FC989A2D9AA70EF6B9CAFC92A277B81B60
+[2026-05-27 09:36:44] [eÁFA XML minta] <?xml version='1.0' encoding='utf-8'?>
+<ManageDeclarationUploadRequest xmlns="http://schemas.nav.gov.hu/EAR/1.0/api" xmlns:common="http://schemas.nav.gov.hu/NTCA/1.0/common"><common:header><common:requestId>M2M_CEQQGMANGVUOOXG</common:requestId><common:timestamp>2026-05-27T07:36:44Z</common:timestamp><common:requestVersion>2.0</common:requestVersion><common:headerVersion>1.0</common:headerVersion></common:header><common:user><common:login>312wdasd</common:login><common:passwordHash cryptoType="SHA-512">***REDACTED***</common:passwordHash><common:taxNumber>12345678</common:taxNumber><common:requestSignature cryptoType="SHA3-512">***REDACTED***</common:requestSignature></common:user><software><softwareId>123456789123456789</softwareId><softwareName>NAV M2M Ado Asszisztens</softwareName><softwareOperation>LOCAL_SOFTWARE</softwareOperation><softwareMainVersion>1.0.0</softwareMainVersion><sof
+[2026-05-27 09:36:44] ℹ️ [eÁFA] Valódi kulcsok hiányoznak, hálózati feltöltés kihagyva.
+[2026-05-27 09:36:44] ℹ️ [eÁFA] Az alkalmazás jelenleg prototípus / előellenőrzés módban fut.
+[2026-05-27 09:36:44] ------------------------------------------------------------
+[2026-05-27 09:36:44] ✅ [Siker] Feldolgozás befejezve.
+[2026-05-27 10:22:54] 
+[2026-05-27 10:22:54] ------------------------------------------------------------
+[2026-05-27 10:22:54] [Kezdés] Feldolgozás indítása...
+[2026-05-27 10:22:54] ❌ [KONFIG HIBA] A technikai felhasználónév kötelező.
+[2026-05-27 10:23:43] 
+[2026-05-27 10:23:43] ------------------------------------------------------------
+[2026-05-27 10:23:43] [Kezdés] Feldolgozás indítása...
+[2026-05-27 10:23:44] ❌ [KONFIG HIBA] Az adószámnak pontosan 8 számjegyből kell állnia.
+[2026-05-27 10:26:33] 
+[2026-05-27 10:26:33] ------------------------------------------------------------
+[2026-05-27 10:26:33] [Kezdés] Feldolgozás indítása...
+[2026-05-27 10:26:33] [Környezet] Aktív környezet: TEST
+[2026-05-27 10:26:33] [Mappa] Figyelt mappa: sap_export
+[2026-05-27 10:26:33] ✅ [Fájl] Megtalálva: SAP_export.xlsx
+[2026-05-27 10:26:33] [Beolvasás] Forrásfájl beolvasása...
+[2026-05-27 10:26:35] 📊 [Statisztika] Beolvasott sorok: 4 db
+[2026-05-27 10:26:35] 📑 [Oszlopok] Szamlaszam, Teljesites_Datuma, Partner_Adoszam, Netto_Ertek, Afa_Ertek, SAP_Ado_Kod
+[2026-05-27 10:26:35] [Adókód] Adókód mapping: A1->DOM_L_GENERAL, F2->EXP_REVERSE_CHARGE
+[2026-05-27 10:26:35] [Adókód] Fordított áfás tétel érzékelve: 1 sor. Ezeknél külön ellenőrizni kell a levonható/fizetendő pozíciót és az esetleges extra adatmezőket.
+[2026-05-27 10:26:35] [Adókód] Nincs külön vámtarifaszám/cikkszám oszlop a forrásban. Ha a 3-as lapos vagy tételes extra adatszolgáltatás kell, ezt a SAP exportba fel kell venni.
+[2026-05-27 10:26:35] [XML] NAV XML generálása folyamatban...
+[2026-05-27 10:26:35] ✅ [XML] Elkészült: kesz_afa_bevallas.xml
+[2026-05-27 10:26:35] 🟢 [XSD] Az XML hivatalosan is VALID a megadott XSD alapján.
+[2026-05-27 10:26:35] [eÁFA] XML API kliens inicializálása...
+[2026-05-27 10:26:35] [eÁFA] Cél URL: https://api-test.eafa.nav.gov.hu/v1/xmlapi/analyticsService/v1/manageDeclarationUpload
+[2026-05-27 10:26:35] [eÁFA] Bevallás mérete: 5895 byte
+[2026-05-27 10:26:35] [eÁFA] Tömörített feltöltési méret: 840 byte
+[2026-05-27 10:26:35] [eÁFA] Partíciók száma: 1
+[2026-05-27 10:26:35] [eÁFA] Tartalom SHA3-512: 5EBCD9F0E97142EA39217441170A0010434974B15A343734B974DFC73D6E8F324ADBC726E408361C6C506415E1C811FC989A2D9AA70EF6B9CAFC92A277B81B60
+[2026-05-27 10:26:35] [eÁFA XML minta] <?xml version='1.0' encoding='utf-8'?>
+<ManageDeclarationUploadRequest xmlns="http://schemas.nav.gov.hu/EAR/1.0/api" xmlns:common="http://schemas.nav.gov.hu/NTCA/1.0/common"><common:header><common:requestId>M2M_3WHIM8ERR1H1L3C</common:requestId><common:timestamp>2026-05-27T08:26:35Z</common:timestamp><common:requestVersion>2.0</common:requestVersion><common:headerVersion>1.0</common:headerVersion></common:header><common:user><common:login>János</common:login><common:passwordHash cryptoType="SHA-512">***REDACTED***</common:passwordHash><common:taxNumber>12345678</common:taxNumber><common:requestSignature cryptoType="SHA3-512">***REDACTED***</common:requestSignature></common:user><software><softwareId>123456789123456789</softwareId><softwareName>NAV M2M Ado Asszisztens</softwareName><softwareOperation>LOCAL_SOFTWARE</softwareOperation><softwareMainVersion>1.0.0</softwareMainVersion><softwa
+[2026-05-27 10:26:35] ℹ️ [eÁFA] Valódi kulcsok hiányoznak, hálózati feltöltés kihagyva.
+[2026-05-27 10:26:35] ℹ️ [eÁFA] Az alkalmazás jelenleg prototípus / előellenőrzés módban fut.
+[2026-05-27 10:26:35] ------------------------------------------------------------
+[2026-05-27 10:26:35] ✅ [Siker] Feldolgozás befejezve.
+[2026-05-27 10:33:08] 
+[2026-05-27 10:33:08] ------------------------------------------------------------
+[2026-05-27 10:33:08] [Kezdés] Feldolgozás indítása...
+[2026-05-27 10:33:08] [Környezet] Aktív környezet: TEST
+[2026-05-27 10:33:08] [Mappa] Figyelt mappa: sap_export
+[2026-05-27 10:33:08] ✅ [Fájl] Megtalálva: SAP_export.xlsx
+[2026-05-27 10:33:08] [Beolvasás] Forrásfájl beolvasása...
+[2026-05-27 10:33:08] 📊 [Statisztika] Beolvasott sorok: 4 db
+[2026-05-27 10:33:08] 📑 [Oszlopok] Szamlaszam, Teljesites_Datuma, Partner_Adoszam, Netto_Ertek, Afa_Ertek, SAP_Ado_Kod
+[2026-05-27 10:33:08] [Adókód] Adókód mapping: A1->DOM_L_GENERAL, F2->EXP_REVERSE_CHARGE
+[2026-05-27 10:33:08] [Adókód] Fordított áfás tétel érzékelve: 1 sor. Ezeknél külön ellenőrizni kell a levonható/fizetendő pozíciót és az esetleges extra adatmezőket.
+[2026-05-27 10:33:08] [Adókód] Nincs külön vámtarifaszám/cikkszám oszlop a forrásban. Ha a 3-as lapos vagy tételes extra adatszolgáltatás kell, ezt a SAP exportba fel kell venni.
+[2026-05-27 10:33:08] [XML] NAV XML generálása folyamatban...
+[2026-05-27 10:33:08] ✅ [XML] Elkészült: kesz_afa_bevallas.xml
+[2026-05-27 10:33:09] 🟢 [XSD] Az XML hivatalosan is VALID a megadott XSD alapján.
+[2026-05-27 10:33:09] [eÁFA] XML API kliens inicializálása...
+[2026-05-27 10:33:09] [eÁFA] Cél URL: https://api-test.eafa.nav.gov.hu/v1/xmlapi/analyticsService/v1/manageDeclarationUpload
+[2026-05-27 10:33:09] [eÁFA] Bevallás mérete: 5895 byte
+[2026-05-27 10:33:09] [eÁFA] Tömörített feltöltési méret: 840 byte
+[2026-05-27 10:33:09] [eÁFA] Partíciók száma: 1
+[2026-05-27 10:33:09] [eÁFA] Tartalom SHA3-512: 5EBCD9F0E97142EA39217441170A0010434974B15A343734B974DFC73D6E8F324ADBC726E408361C6C506415E1C811FC989A2D9AA70EF6B9CAFC92A277B81B60
+[2026-05-27 10:33:09] [eÁFA XML minta] <?xml version='1.0' encoding='utf-8'?>
+<ManageDeclarationUploadRequest xmlns="http://schemas.nav.gov.hu/EAR/1.0/api" xmlns:common="http://schemas.nav.gov.hu/NTCA/1.0/common"><common:header><common:requestId>M2M_QR6X1C98ABKFNOD</common:requestId><common:timestamp>2026-05-27T08:33:09Z</common:timestamp><common:requestVersion>2.0</common:requestVersion><common:headerVersion>1.0</common:headerVersion></common:header><common:user><common:login>János</common:login><common:passwordHash cryptoType="SHA-512">***REDACTED***</common:passwordHash><common:taxNumber>12345678</common:taxNumber><common:requestSignature cryptoType="SHA3-512">***REDACTED***</common:requestSignature></common:user><software><softwareId>123456789123456789</softwareId><softwareName>NAV M2M Ado Asszisztens</softwareName><softwareOperation>LOCAL_SOFTWARE</softwareOperation><softwareMainVersion>1.0.0</softwareMainVersion><softwa
+[2026-05-27 10:33:09] ℹ️ [eÁFA] Valódi kulcsok hiányoznak, hálózati feltöltés kihagyva.
+[2026-05-27 10:33:09] ℹ️ [eÁFA] Az alkalmazás jelenleg prototípus / előellenőrzés módban fut.
+[2026-05-27 10:33:09] ------------------------------------------------------------
+[2026-05-27 10:33:09] ✅ [Siker] Feldolgozás befejezve.
+[2026-05-27 10:33:24] 
+[2026-05-27 10:33:24] ------------------------------------------------------------
+[2026-05-27 10:33:24] [Kapcsolat teszt] eÁFA M2M kapcsolat előellenőrzés indítása...
+[2026-05-27 10:33:24] [Környezet] Aktív környezet: TEST
+[2026-05-27 10:33:24] [Adószám] 12345678
+[2026-05-27 10:33:24] [Kapcsolat teszt] eÁFA QueryTaxCodeCatalog request előállítása...
+[2026-05-27 10:33:24] ✅ [Kapcsolat teszt] eÁFA request sikeresen legenerálva.
+[2026-05-27 10:33:24] [eÁFA URL] https://api-test.eafa.nav.gov.hu/v1/xmlapi/analyticsService/v1/queryTaxCodeCatalog
+[2026-05-27 10:33:24] [XML minta] <?xml version='1.0' encoding='utf-8'?>
+<QueryTaxCodeCatalogRequest xmlns="http://schemas.nav.gov.hu/EAR/1.0/api" xmlns:common="http://schemas.nav.gov.hu/NTCA/1.0/common"><common:header><common:requestId>M2M_TCU1UBH2URDNUZ8</common:requestId><common:timestamp>2026-05-27T08:33:24Z</common:timestamp><common:requestVersion>2.0</common:requestVersion><common:headerVersion>1.0</common:headerVersion></common:header><common:user><common:login>János</common:login><common:passwordHash cryptoType="SHA-512">***REDACTED***</common:passwordHash><common:taxNumber>12345678</common:taxNumber><common:requestSignature cryptoType="SHA3-512">***REDACTED***</common:requestSignature></common:user><software><softwareId>123456789123456789</softwareId><softwareName>NAV M2M Ado Asszisztens</softwareName><softwareOperation>LOCAL_SOFTWARE</softwareOperation><softwareMainVersion>1.0.0</softwareMainVersion><softwareDe
+[2026-05-27 10:33:24] ℹ️ [Kapcsolat teszt] Valódi NAV kulcsok még nincsenek megadva.
+[2026-05-27 10:33:24] ℹ️ [Kapcsolat teszt] A valódi eÁFA hívás kihagyva, csak előellenőrzés történt.

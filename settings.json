@@ -1,0 +1,16 @@
+{
+  "python.analysis.typeCheckingMode": "basic",
+  "python.analysis.diagnosticMode": "workspace",
+  "python.analysis.useLibraryCodeForTypes": true,
+  "python.analysis.diagnosticSeverityOverrides": {
+    "reportMissingTypeStubs": "none",
+    "reportUnknownMemberType": "information",
+    "reportUnknownVariableType": "information",
+    "reportUnknownArgumentType": "information",
+    "reportUnknownParameterType": "information",
+    "reportUnknownLambdaType": "information",
+    "reportUnnecessaryCast": "warning",
+    "reportUnnecessaryIsInstance": "warning"
+  },
+  "python.analysis.stubPath": "./typings"
+}
