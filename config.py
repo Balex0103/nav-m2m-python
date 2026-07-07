@@ -1,4 +1,31 @@
 from dataclasses import dataclass
+import os
+import sys
+
+if getattr(sys, 'frozen', False):
+    app_dir = os.path.dirname(sys.executable)
+    bundle_dir = getattr(sys, '_MEIPASS', app_dir)
+else:
+    app_dir = os.path.dirname(os.path.abspath(__file__))
+    bundle_dir = app_dir
+
+APP_DIR = app_dir
+BUNDLE_DIR = bundle_dir
+
+MEGFIGYELT_MAPPA_NEV = "sap_export"
+MEGFIGYELT_MAPPA = os.path.join(APP_DIR, MEGFIGYELT_MAPPA_NEV)
+KIMENETI_XML = os.path.join(APP_DIR, "kesz_afa_bevallas.xml")
+VDR_MAPPA = os.path.join(BUNDLE_DIR, "vdr")
+LOG_MAPPA = os.path.join(APP_DIR, "logs")
+
+KATALOGUS_CSV = os.path.join(VDR_MAPPA, "adokod_katalogus.csv")
+
+SAP_NAV_ADOKOD_MAPPING = {
+    "A1": "DOM_L_GENERAL",
+    "F2": "EXP_REVERSE_CHARGE",
+}
+
+KIHAGYANDO_MUNKALAP_NEV_RESZLETEK = ("MATRIX", "SZOTAR", "SZÓTÁR", "INFO")
 
 
 TEST_BASE_URL = "https://api-test.onlineszamla.nav.gov.hu/invoiceService/v3"
