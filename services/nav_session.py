@@ -3,16 +3,16 @@ from __future__ import annotations
 from typing import Any, cast
 
 from config import NavUserConfig
-from services import ui_runtime
 
-def nav_config_osszeallitasa() -> NavUserConfig:
+
+def nav_config_osszeallitasa(tech_user: str, password: str, sign_key: str, exchange_key: str, tax_number: str, environment: str) -> NavUserConfig:
     return NavUserConfig(
-        tech_user=cast(Any, entry_tech_user).get().strip(),
-        password=cast(Any, entry_jelszo).get().strip(),
-        sign_key=cast(Any, entry_sign_kulcs).get().strip(),
-        exchange_key=cast(Any, entry_xml_kulcs).get().strip(),
-        tax_number=cast(Any, entry_adoszam).get().strip(),
-        environment=cast(Any, combo_kornyezet).get().strip().upper(),
+        tech_user=tech_user.strip(),
+        password=password.strip(),
+        sign_key=sign_key.strip(),
+        exchange_key=exchange_key.strip(),
+        tax_number=tax_number.strip(),
+        environment=environment.strip().upper(),
     )
 
 def helyorzo_vagy_hianyos_ertek(value: str) -> bool:
@@ -48,11 +48,6 @@ def van_valodi_nav_hitelesites(config: NavUserConfig) -> bool:
         tul_rovid_valodi_kulcshoz(config.exchange_key, 16),
     ])
 
-def eafa_feltoltes_engedelyezve(config: NavUserConfig) -> bool:
-    try:
-        engedelyezve = bool(cast(Any, chk_eafa_feltoltes).get())
-    except Exception:
-        engedelyezve = False
-
+def eafa_feltoltes_engedelyezve(config: NavUserConfig, engedelyezve: bool) -> bool:
     return engedelyezve and config.environment == "TEST"
 

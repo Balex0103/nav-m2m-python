@@ -2,9 +2,9 @@ import datetime
 import re
 
 from config import NavUserConfig
-from eafa_api import EafaApiClient
-from nav_api import generate_request_id
-from validators import validate_user_config
+from nav.eafa_api import EafaApiClient
+from nav.nav_api import generate_request_id
+from nav.validators import validate_user_config
 
 
 def build_test_config() -> NavUserConfig:
