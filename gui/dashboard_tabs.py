@@ -2,12 +2,10 @@
 from __future__ import annotations
 
 import logging
-import datetime
-import urllib.parse
-import webbrowser
+import os
 from typing import Any, Callable, Optional, cast
 from tkinter import messagebox
-
+import pandas as pd
 import customtkinter as ctk
 
 from gui.workflows import automatikus_feldolgozas_inditasa, kapcsolat_teszt_inditasa
@@ -60,20 +58,153 @@ class DashboardTabs(ctk.CTkFrame):
                 log_ctrl.see("end")
         cast(Any, Logger).set_callback(log_callback)
 
+    def _sablon_letoltese_vegrehajtasa(self) -> None:
+        """Legenerálja, megformázza és igazi excel lenyílókkal látja el a mintafájlt."""
+        try:
+            from openpyxl.styles import Font, PatternFill, Alignment # type: ignore
+            from openpyxl.worksheet.datavalidation import DataValidation # type: ignore
+            
+            fejadat_rows = [
+                ["Adatkör", "Megnevezés", "XML mező", "Érték", "Adat"],
+                ["A bevallás fejadatai (Módosítás adatai)", "Adószám", "taxNumber", "12345678", "taxNumberField"],
+                ["", "Bevallás típusa", "declarationType", "NONE", "declarationTypeCombo"],
+                ["", "Bevallás fajtája", "declarationKind", "NONE", "declarationKindCombo"],
+                ["", "Bevallás gyakorisága", "declarationFrequency", "MONTHLY", "declarationFrequencyCombo"],
+                ["", "Bevallási időszak kezdete", "declarationPeriodStart", "2025-10-01", "periodStartPicker"],
+                ["", "Bevallási időszak vége", "declarationPeriodEnd", "2025-10-31", "periodEndPicker"],
+                ["", "A benyújtott bevallás verziószáma", "version", "1", "versionField"],
+                ["", "Bevallás jellege", "declarationMethod", "BASE", "declarationMethodCombo"],
+                ["", "NAV kiértesítés szerinti javítás.", "navCorrection", "false", "navCorrectionCheck"]
+            ]
+            df_fejadat = pd.DataFrame(fejadat_rows)
+
+            analitika_rows = [
+                ["Analitika sorszáma", "Főkönyvi adatok", "", "", "Forrás dokumentum egyedi azonosítója", "Forrás dokumentum kiállítási dátuma", "Forrás dokumentum bizonylat típusa", "Adó esedékességi napja", "Partner adatok", "", "", "", "", "", "", "", "", "", "Adózási adatok", "", "", "", "", "", "", ""],
+                ["", "Főkönyvi számlaszám", "Főkönyvi feladás dátuma", "Főkönyvi könyvelés egyedi azonosítója", "", "", "", "", "Partner ÁFA szerinti státusza", "Partner adószáma", "", "", "", "Partner neve", "Partner címadatai", "", "", "", "A tétel standard adókódja", "A tétel vállalati adókódja", "A tétel adózási pozíciója", "", "", "", "A tétel adózási pozíciója", ""],
+                ["", "", "", "", "", "", "", "", "", "Belföldi adószám adatok", "", "Közösségi adószám", "Harmadik országbeli adóazonosító", "", "Országkód", "Régió, tartomány kódja", "Irányítószám", "Város", "Cím", "", "", "Áfa pozíció jelölése", "Adó alapja", "Adó összege", "Levonási adatok", "", "Áfa pozíció jelölése", "Adó alapja", "Adó összege", "Levonási adatok"],
+                ["", "", "", "", "", "", "", "", "", "Az adószám 8 jegyű törzsszáma", "Csoport tag adószámának 8 jegyű törzsszáma", "", "", "", "", "", "", "", "", "", "", "", "", "", "Levonási hányados", "Levonási összeg", "", "", "Levonási hányados", "Levonási összeg"],
+                ["lineNumber", "glAccountId", "glPostingDate", "glTransactionId", "sourceDocumentId", "sourceDocumentIssueDate", "sourceDocumentType", "taxpointDate", "partnerStatus", "customerTaxNumber", "groupMemberTaxNumber", "communityTaxNumber", "thirdCountryTaxId", "partnerName", "countryCode", "region", "postalCode", "city", "streetAddress", "standardTaxCode", "ownTaxCode", "positionType", "taxBase", "taxAmount", "deductionCondition", "deductionRatio", "deductedAmount"]
+            ]
+            df_analitika = pd.DataFrame(analitika_rows)
+
+            ertekek_data = {
+                "declarationType": ["NONE", "ELIMINATION", "LIQUIDATION", "SELF_EMPLOYMENT_END", "TRANSFORMATION", "TERMINATION", "PAUSING"],
+                "declarationKind": ["NONE", "PREVIOUS_PERIOD", "UNDER_PROCESS", "CLOSURE", "", "", ""],
+                "declarationFrequency": ["ANNUAL", "QUARTERLY", "MONTHLY", "", "", "", ""],
+                "declarationMethod": ["BASE", "SELF_CHECK", "CORRECTION", "", "", "", ""],
+                "Boolean": ["true", "false", "", "", "", "", ""],
+                "sourceDocumentType": ["INVOICE", "RECEIPT", "CUSTOMS_DECLARATION", "OTHER", "", "", ""],
+                "partnerStatus": ["NOT_AVAILABLE", "PRIVATE_PERSON", "DOMESTIC", "OTHER", "", "", ""],
+                "positionType": ["PAYABLE", "DEDUCTIBLE", "OTHER", "", "", "", ""]
+            }
+            df_ertekek = pd.DataFrame(ertekek_data)
+
+            asztal_utvonal = os.path.join(os.path.expanduser("~"), "Desktop", "01_pelda_fizetendo.xlsx")
+            
+            with pd.ExcelWriter(asztal_utvonal, engine='openpyxl') as writer:
+                df_fejadat.to_excel(writer, sheet_name='Bevallás Fejadatok', index=False, header=False)
+                df_analitika.to_excel(writer, sheet_name='Analitika Adatok', index=False, header=False)
+                df_ertekek.to_excel(writer, sheet_name='Értékek', index=False)
+
+                workbook = writer.book
+                
+                # 1. FEJADAT LAP FORMÁZÁSA ÉS LENYÍLÓK
+                ws1 = workbook['Bevallás Fejadatok']
+                ws1.views.sheetView[0].showGridLines = True
+                
+                header_fill = PatternFill(start_color="1A1A2E", end_color="1A1A2E", fill_type="solid")
+                header_font = Font(name="Segoe UI", size=11, bold=True, color="FFFFFF")
+                for col_num in range(1, 6):
+                    cell = ws1.cell(row=1, column=col_num)
+                    cell.fill = header_fill
+                    cell.font = header_font
+                
+                ws1.column_dimensions['A'].width = 38
+                ws1.column_dimensions['B'].width = 35
+                ws1.column_dimensions['C'].width = 22
+                ws1.column_dimensions['D'].width = 18
+                ws1.column_dimensions['E'].width = 25
+
+                # Igazi Excel legördülő listák (Data Validation) bekötése az Értékek fülről!
+                dv_dec_type = DataValidation(type="list", formula1="=Értékek!$A$2:$A$8", allow_blank=True)
+                dv_dec_kind = DataValidation(type="list", formula1="=Értékek!$B$2:$B$5", allow_blank=True)
+                dv_dec_freq = DataValidation(type="list", formula1="=Értékek!$C$2:$C$4", allow_blank=True)
+                dv_dec_meth = DataValidation(type="list", formula1="=Értékek!$D$2:$D$4", allow_blank=True)
+                dv_bool = DataValidation(type="list", formula1="=Értékek!$E$2:$E$3", allow_blank=True)
+
+                ws1.add_data_validation(dv_dec_type)
+                ws1.add_data_validation(dv_dec_kind)
+                ws1.add_data_validation(dv_dec_freq)
+                ws1.add_data_validation(dv_dec_meth)
+                ws1.add_data_validation(dv_bool)
+
+                dv_dec_type.add(ws1["D3"])
+                dv_dec_kind.add(ws1["D4"])
+                dv_dec_freq.add(ws1["D5"])
+                dv_dec_meth.add(ws1["D9"])
+                dv_bool.add(ws1["D10"])
+
+                # 2. ANALITIKA LAP FORMÁZÁSA ÉS LENYÍLÓK
+                ws2 = workbook['Analitika Adatok']
+                ws2.views.sheetView[0].showGridLines = True
+                
+                gray_fill = PatternFill(start_color="EAEAEA", end_color="EAEAEA", fill_type="solid")
+                dark_gray_fill = PatternFill(start_color="D0D0D0", end_color="D0D0D0", fill_type="solid")
+                bold_font = Font(name="Segoe UI", size=10, bold=True)
+                
+                for r in range(1, 5):
+                    for c in range(1, 28):
+                        cell = ws2.cell(row=r, column=c)
+                        if cell.value:
+                            cell.fill = gray_fill
+                            cell.font = bold_font
+                
+                for c in range(1, 28):
+                    cell = ws2.cell(row=5, column=c)
+                    cell.fill = dark_gray_fill
+                    cell.font = Font(name="Consolas", size=10, bold=True, color="111111")
+
+                for col in ws2.columns:
+                    ws2.column_dimensions[col[0].column_letter].width = 22
+
+                # Analitika oszlopok interaktív lenyílói (Egész oszlopokra kiterjesztve a 6. sortól a 500. sorig)
+                dv_doc_type = DataValidation(type="list", formula1="=Értékek!$F$2:$F$5", allow_blank=True)
+                dv_part_stat = DataValidation(type="list", formula1="=Értékek!$G$2:$G$5", allow_blank=True)
+                dv_pos_type = DataValidation(type="list", formula1="=Értékek!$H$2:$H$4", allow_blank=True)
+
+                ws2.add_data_validation(dv_doc_type)
+                ws2.add_data_validation(dv_part_stat)
+                ws2.add_data_validation(dv_pos_type)
+
+                dv_doc_type.add("G6:G500")
+                dv_part_stat.add("I6:I500")
+                dv_pos_type.add("U6:U500")
+
+            messagebox.showinfo("Sikeres letöltés", f"A hivatalos, interaktív lenyílókkal ellátott NAV eÁFA mintafájl elkészült az Asztalra:\n\n{asztal_utvonal}")
+            logger.info(f"✅ [Sablon] Interaktív többlapos adatsablon legenerálva: {asztal_utvonal}")
+        except Exception as e:
+            messagebox.showerror("Hiba", f"Nem sikerült a sablon mentése: {str(e)}")
+
     def _feldolgozas_tab_felep(self, tab: Any) -> None:
         gomb_sor = ctk.CTkFrame(tab, fg_color="transparent")
         gomb_sor.pack(fill="x", pady=(0, 8))
 
         self.btn_feldolgoz = ctk.CTkButton(
-            gomb_sor, text="▶️  Mappa ellenőrzése és Feldolgozás indítása",
-            width=180, fg_color="#2e7d32", hover_color="#1b5e20",
+            gomb_sor, text="▶️  Feldolgozás indítása",
+            width=150, fg_color="#2e7d32", hover_color="#1b5e20",
             command=self._feldolgozas_inditas,
         )
         self.btn_feldolgoz.pack(side="left", padx=4)
 
+        ctk.CTkButton(
+            gomb_sor, text="📥 Sablon letöltése", width=140,
+            fg_color="#d35400", hover_color="#b33925",
+            command=self._sablon_letoltese_vegrehajtasa
+        ).pack(side="left", padx=4)
+
         import gui.previews as previews
-        ctk.CTkButton(gomb_sor, text="📊  Excel előnézet", width=160, fg_color="#1565c0", hover_color="#0d47a1", command=lambda: previews.excel_preview_megnyitas(self)).pack(side="left", padx=4)
-        ctk.CTkButton(gomb_sor, text="📄  XML előnézet", width=160, fg_color="#6a1b9a", hover_color="#4a148c", command=lambda: previews.xml_preview_megnyitas(self)).pack(side="left", padx=4)
+        ctk.CTkButton(gomb_sor, text="📊  Excel előnézet", width=140, fg_color="#1565c0", hover_color="#0d47a1", command=lambda: previews.excel_preview_megnyitas(self)).pack(side="left", padx=4)
+        ctk.CTkButton(gomb_sor, text="📄  XML előnézet", width=140, fg_color="#6a1b9a", hover_color="#4a148c", command=lambda: previews.xml_preview_megnyitas(self)).pack(side="left", padx=4)
 
         self.fajl_label = ctk.CTkLabel(tab, text="Nincs betöltött fájl.", font=ctk.CTkFont(size=12), text_color="#888888")
         self.fajl_label.pack(anchor="w", padx=6)
@@ -162,8 +293,9 @@ class DashboardTabs(ctk.CTkFrame):
         self.entry_adoszam = ctk.CTkEntry(beallitas_keret, placeholder_text="Adószám (8 számjegy)", width=320)
         self.entry_adoszam.grid(row=3, column=0, padx=10, pady=(0, 15))
         
-        # Élő esemény alapú kötés a placeholder text megtartásához!
-        self.entry_adoszam.bind("<KeyRelease>", lambda event: self._frissit_adozas_adoszam())
+        def _on_adoszam_keyup(event: Any) -> None:
+            self._frissit_adozas_adoszam()
+        self.entry_adoszam.bind("<KeyRelease>", _on_adoszam_keyup)
 
         self.combo_kornyezet = ctk.CTkComboBox(beallitas_keret, values=["TEST", "PROD"], width=320)
         self.combo_kornyezet.grid(row=3, column=1, padx=10, pady=(0, 15))
@@ -202,7 +334,7 @@ class DashboardTabs(ctk.CTkFrame):
 
             test_szoveg = (
                 f"=== NAV M2M RENDSZERHIBA JELENTÉS ===\n"
-                f"Időpont: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
+                f"Id•pont: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
                 f"Adószám: {adoszam}\n"
                 f"Környezet: eÁFA v2.0\n"
                 f"--------------------------------------------------\n"
@@ -223,7 +355,6 @@ class DashboardTabs(ctk.CTkFrame):
             except Exception:
                 messagebox.showinfo("Vágólapra mentve", "A levelezőt nem sikerült közvetlenül megnyitni, de a hibajelentést a vágólapra mentettem! Másold be egy levélbe balint.papp@cegnev.hu címre.")
 
-        # Az elgépelés itt lett véglegesen kijavítva!
         ctk.CTkButton(helpdesk_keret, text="✉️ Hibajelentés generálása és Vágólapra másolása", font=ctk.CTkFont(size=13, weight="bold"), fg_color="#8E44AD", hover_color="#732D91", height=38, command=hiba_bejelentes_vegrehajtasa).pack(pady=15)
 
     def _kapcsolat_teszt_inditasa(self) -> None:
@@ -253,15 +384,9 @@ class DashboardTabs(ctk.CTkFrame):
         environment = cast(str, cast(Any, self.combo_kornyezet).get()) if hasattr(self, 'combo_kornyezet') else "TEST"
 
         kapcsolat_teszt_inditasa(
-            tech_user=tech_user,
-            password=password,
-            sign_key=sign_key,
-            exchange_key=exchange_key,
-            tax_number=tax_number,
-            environment=environment,
-            allapot_uzenet=statusz_updater,
-            show_error_popup=error_popup_wrapper,
-            reset_buttons=reset_buttons
+            tech_user=tech_user, password=password, sign_key=sign_key, exchange_key=exchange_key,
+            tax_number=tax_number, environment=environment, allapot_uzenet=statusz_updater,
+            show_error_popup=error_popup_wrapper, reset_buttons=reset_buttons
         )
 
     def _feldolgozas_inditas(self) -> None:
@@ -295,15 +420,8 @@ class DashboardTabs(ctk.CTkFrame):
         eafa_feltoltes = bool(self.chk_eafa_feltoltes.get()) if hasattr(self, 'chk_eafa_feltoltes') else False
 
         automatikus_feldolgozas_inditasa(
-            tech_user=tech_user,
-            password=password,
-            sign_key=sign_key,
-            exchange_key=exchange_key,
-            tax_number=tax_number,
-            environment=environment,
-            eafa_feltoltes=eafa_feltoltes,
-            allapot_uzenet=statusz_updater,
-            show_error_popup=error_popup_wrapper,
-            ask_yes_no_popup=yes_no_popup_wrapper,
-            reset_buttons=reset_buttons
+            tech_user=tech_user, password=password, sign_key=sign_key, exchange_key=exchange_key,
+            tax_number=tax_number, environment=environment, eafa_feltoltes=eafa_feltoltes,
+            allapot_uzenet=statusz_updater, show_error_popup=error_popup_wrapper,
+            ask_yes_no_popup=yes_no_popup_wrapper, reset_buttons=reset_buttons
         )

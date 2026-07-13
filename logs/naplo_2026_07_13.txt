@@ -111,3 +111,26 @@
 <QueryTaxCodeCatalogRequest xmlns="http://schemas.nav.gov.hu/EAR/1.0/api" xmlns:common="http://schemas.nav.gov.hu/NTCA/1.0/common"><common:header><common:requestId>M2M_GSS2F3JOH9SC3VM</common:requestId><common:timestamp>2026-07-13T12:15:32Z</common:timestamp><common:requestVersion>2.0</common:requestVersion><common:headerVersion>1.0</common:headerVersion></common:header><common:user><common:login>kemenes</common:login><common:passwordHash cryptoType="SHA-512">***REDACTED***</common:passwordHash><common:taxNumber>12344567</common:taxNumber><common:requestSignature cryptoType="SHA3-512">***REDACTED***</common:requestSignature></common:user><software><softwareId>123456789123456789</softwareId><softwareName>NAV M2M Ado Asszisztens</softwareName><softwareOperation>LOCAL_SOFTWARE</softwareOperation><softwareMainVersion>1.0.0</softwareMainVersi
 [2026-07-13 14:15:32] ℹ️ [Kapcsolat teszt] Valódi NAV kulcsok még nincsenek megadva.
 [2026-07-13 14:15:32] ℹ️ [Kapcsolat teszt] A valódi eÁFA hívás kihagyva, csak előellenőrzés történt.
+[2026-07-13 15:19:47] 
+[2026-07-13 15:19:47] ------------------------------------------------------------
+[2026-07-13 15:19:47] [Kezdés] Feldolgozás indítása...
+[2026-07-13 15:19:47] [Környezet] Aktív környezet: TEST
+[2026-07-13 15:19:47] [Mappa] Figyelt mappa: /Users/balesz/NAV_M2M_Python/sap_export
+[2026-07-13 15:19:47] ✅ [Fájl] Megtalálva: 01_példa_fizetendő.xlsx
+[2026-07-13 15:19:47] [Beolvasás] Munkalapok beolvasása a memóriába...
+[2026-07-13 15:19:48] ℹ️ [Szűrés] 'Bevallás Fejadatok' munkalap fejadatként kezelve, nem tételes analitika.
+[2026-07-13 15:19:48] ℹ️ [Szűrés] 'Analitika Adatok' munkalap kihagyva, mert nem teljes áfa analitika. Hiányzó oszlopok: Afa_Ertek, Netto_Ertek, Szamlaszam, Teljesites_Datuma
+[2026-07-13 15:19:48] ℹ️ [Szűrés] 'Értékek' munkalap kihagyva (nem áfa analitika).
+[2026-07-13 15:19:48] ❌ [HIBA] Nincs feldolgozható áfa munkalap az Excelben a szűrés után.
+[2026-07-13 15:20:01] 
+[2026-07-13 15:20:01] ------------------------------------------------------------
+[2026-07-13 15:20:01] [Kezdés] Feldolgozás indítása...
+[2026-07-13 15:20:01] [Környezet] Aktív környezet: PROD
+[2026-07-13 15:20:01] [Mappa] Figyelt mappa: /Users/balesz/NAV_M2M_Python/sap_export
+[2026-07-13 15:20:01] ✅ [Fájl] Megtalálva: 01_példa_fizetendő.xlsx
+[2026-07-13 15:20:01] [Beolvasás] Munkalapok beolvasása a memóriába...
+[2026-07-13 15:20:01] ℹ️ [Szűrés] 'Bevallás Fejadatok' munkalap fejadatként kezelve, nem tételes analitika.
+[2026-07-13 15:20:01] ℹ️ [Szűrés] 'Analitika Adatok' munkalap kihagyva, mert nem teljes áfa analitika. Hiányzó oszlopok: Afa_Ertek, Netto_Ertek, Szamlaszam, Teljesites_Datuma
+[2026-07-13 15:20:01] ℹ️ [Szűrés] 'Értékek' munkalap kihagyva (nem áfa analitika).
+[2026-07-13 15:20:01] ❌ [HIBA] Nincs feldolgozható áfa munkalap az Excelben a szűrés után.
+[2026-07-13 15:20:32] ⚠️ Nincs még megtekinthető XML előnézet.

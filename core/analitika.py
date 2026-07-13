@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 import os
-from typing import Any, Optional, cast
+from typing import Any, Optional
 
 import pandas as pd
 
@@ -28,8 +28,8 @@ def fajl_beolvasasa(fajl_utvonal: str) -> dict[str, pd.DataFrame]:
         df = pd.read_csv(fajl_utvonal)
         return {os.path.basename(fajl_utvonal): df}
     else:
-        # type: ignore direktívával elfedjük a pandas read_excel verziófüggő visszatérési anomáliáit
-        return cast(dict[str, pd.DataFrame], pd.read_excel(fajl_utvonal, sheet_name=None)) # type: ignore
+        # A felesleges cast törölve, típusfigyelmeztetés elfedve
+        return pd.read_excel(fajl_utvonal, sheet_name=None)  # type: ignore
 
 
 def peri_fejadatok_kinyerese(lapok_dict: dict[str, pd.DataFrame]) -> dict[str, Any]:

@@ -138,7 +138,7 @@ class UpdaterService:
             resp.raise_for_status()
             data: Any = resp.json()
             if isinstance(data, list) and len(data) > 0:
-                data_list = cast(list[Any], data) # A Pylance list[Unknown] panasza itt lett kezelve
+                data_list = cast(list[Any], data)
                 commit_obj = cast(dict[str, Any], data_list[0])
                 commit_data = cast(dict[str, Any], commit_obj.get("commit", {}))
                 author_data = cast(dict[str, Any], commit_data.get("author", {}))
