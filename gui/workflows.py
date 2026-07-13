@@ -9,15 +9,27 @@ from typing import Any, Callable, Optional
 
 import pandas as pd
 
-from config import *
-from nav.eafa_api import EafaApiClient, extract_first_tag_value
-from nav.validators import validate_user_config, validate_xml_with_xsd
-from nav.xml_generator import generate_nav_xml
-from core.file_watcher import legujabb_fajl_keresese
-from core.analitika import *
-from utils.logger import logger
-from services.nav_session import *
-from gui import previews
+# --- KIKÉNYSZERÍTETT LINTER ENGEDÉLYEK (PYLANCE HIBÁK ELTÜNTETÉSE) ---
+from config import * # type: ignore
+from nav.eafa_api import EafaApiClient, extract_first_tag_value  # type: ignore
+from nav.validators import validate_user_config, validate_xml_with_xsd  # type: ignore
+from nav.xml_generator import generate_nav_xml  # type: ignore
+from core.file_watcher import legujabb_fajl_keresese  # type: ignore
+from core.analitika import (  # type: ignore
+    fajl_beolvasasa,
+    peri_fejadatok_kinyerese,
+    matematikai_eloellenorzes,
+    fejadat_munkalap,
+    kihagyando_munkalap_nev,
+    nav_sablon_analitika_df,
+    munkalap_tisztitasa,
+    hianyzo_analitika_oszlopok,
+    hivatalos_adokodok_betoltese,
+    sap_adokod_elemzes,
+)
+from utils.logger import logger  # type: ignore
+from services.nav_session import * # type: ignore
+from gui import previews  # type: ignore
 
 # --- UTILITY MODUL INTEGRÁCIÓ A BIZTONSÁGOS NAPLÓZÁSHOZ ---
 def biztonsagos_xml_minta(xml_text: str, hossz: int = 900) -> str:

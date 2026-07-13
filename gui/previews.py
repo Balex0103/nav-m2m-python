@@ -1,24 +1,27 @@
+# gui/previews.py
 from __future__ import annotations
 
 import os
-from typing import Any, cast
+from typing import Any, cast, Optional
 
 import customtkinter as ctk
+import pandas as pd
 
 from utils.logger import logger
 from core.analitika import dataframe_balra_zart_szoveg
 from config import *
 
-utolso_lapok_dict = {}
-utolso_flat_dataframe = None
-utolso_xml_tartalom = ''
-utolso_fajl = ''
+# Explicit típusannotáció a Pylance megnyugtatására
+utolso_lapok_dict: dict[str, pd.DataFrame] = {}
+utolso_flat_dataframe: Optional[pd.DataFrame] = None
+utolso_xml_tartalom: str = ''
+utolso_fajl: str = ''
 
 def xml_preview_megnyitas(ablak: Any) -> None:
     global utolso_xml_tartalom
 
     if not utolso_xml_tartalom.strip():
-        logger.warning("⚠️ Nincs még megjeleníthető XML előnézet.")
+        logger.warning("⚠️ Nincs még megtekinthető XML előnézet.")
         return
 
     ablak2 = ctk.CTkToplevel(ablak)
@@ -34,7 +37,7 @@ def excel_preview_megnyitas(ablak: Any) -> None:
     global utolso_lapok_dict, utolso_fajl
 
     if not utolso_lapok_dict:
-        logger.warning("⚠️ Nincs még megjeleníthető Excel előnézet.")
+        logger.warning("⚠️ Nincs még megtekinthető Excel előnézet.")
         return
 
     ablak2 = ctk.CTkToplevel(ablak)
@@ -46,7 +49,7 @@ def excel_preview_megnyitas(ablak: Any) -> None:
 
     for lap_nev, lap_df in utolso_lapok_dict.items():
         tab = cast(Any, tabview).add(str(lap_nev))
-        preview_df = lap_df.head(25).copy()
+        preview_df = cast(pd.DataFrame, lap_df.head(25).copy())
 
         info = ctk.CTkLabel(
             tab,
@@ -65,4 +68,3 @@ def excel_preview_megnyitas(ablak: Any) -> None:
 
         cast(Any, textbox).insert("0.0", szoveg)
         cast(Any, textbox).configure(state="disabled")
-
