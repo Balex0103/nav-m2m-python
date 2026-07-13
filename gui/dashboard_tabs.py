@@ -6,7 +6,7 @@ import datetime
 import urllib.parse
 import webbrowser
 from typing import Any, Callable, Optional, cast
-from tkinter import StringVar, messagebox
+from tkinter import messagebox
 
 import customtkinter as ctk
 
@@ -29,18 +29,6 @@ class DashboardTabs(ctk.CTkFrame):
     ) -> None:
         super().__init__(master, **kwargs)
         self.kornyezet_callback = kornyezet_callback
-        
-        # Élő adat-tükrözés változói
-        self.adoszam_var = StringVar(value="")
-        self.tech_user_var = StringVar(value="")
-        self.jelszo_var = StringVar(value="")
-        self.xml_kulcs_var = StringVar(value="")
-        self.sign_kulcs_var = StringVar(value="")
-        self.kornyezet_var = StringVar(value="TEST")
-        
-        # Reaktív nyomkövetés az adószám élő frissítéséhez
-        self.adoszam_var.trace_add("write", lambda *args: self._frissit_adozas_adoszam())
-        
         self._tabview_letrehozasa()
 
     def _tabview_letrehozasa(self) -> None:
@@ -70,7 +58,7 @@ class DashboardTabs(ctk.CTkFrame):
                 else:
                     log_ctrl.insert("end", msg + "\n")
                 log_ctrl.see("end")
-        Logger.set_callback(log_callback) # type: ignore
+        cast(Any, Logger).set_callback(log_callback)
 
     def _feldolgozas_tab_felep(self, tab: Any) -> None:
         gomb_sor = ctk.CTkFrame(tab, fg_color="transparent")
@@ -124,14 +112,17 @@ class DashboardTabs(ctk.CTkFrame):
         self._frissit_adozas_adoszam()
 
     def _frissit_adozas_adoszam(self) -> None:
-        """Frissíti az adózási állapot fület a beírt adószám alapján."""
-        if hasattr(self, 'lbl_ceg') and self.lbl_ceg is not None:
-            val = self.adoszam_var.get().strip()
+        """Frissíti az adószámot gépelés közben az Adózási fülön."""
+        if hasattr(self, 'lbl_ceg'):
+            val = ""
+            if hasattr(self, 'entry_adoszam'):
+                val = cast(str, cast(Any, self.entry_adoszam).get()).strip()
+                
             adoszam_rovid = val if val else "--------"
             ceg_nev = "M2M Partner Vállalat Kft." if val else "Nincs konfigurált vállalat"
             cast(Any, self.lbl_ceg).configure(text=f"Regisztrált Alany: {ceg_nev} | Adószám: {adoszam_rovid}")
             
-            if hasattr(self, 'lbl_koma_value') and self.lbl_koma_value is not None:
+            if hasattr(self, 'lbl_koma_value'):
                 if len(adoszam_rovid) == 8 and adoszam_rovid.isdigit():
                     cast(Any, self.lbl_koma_value).configure(text="🟢 IGEN (Köztartozásmentes Adatbázisban szerepel)", text_color="#00FF88")
                 else:
@@ -160,18 +151,21 @@ class DashboardTabs(ctk.CTkFrame):
 
         ctk.CTkLabel(beallitas_keret, text="⚙️ NAV API Hitelesítési Adatok", font=ctk.CTkFont(size=13, weight="bold")).grid(row=0, column=0, columnspan=2, pady=10, padx=10, sticky="w")
 
-        self.entry_tech_user = ctk.CTkEntry(beallitas_keret, placeholder_text="Technikai felhasználónév", width=320, textvariable=self.tech_user_var)
+        self.entry_tech_user = ctk.CTkEntry(beallitas_keret, placeholder_text="Technikai felhasználónév", width=320)
         self.entry_tech_user.grid(row=1, column=0, padx=10, pady=(0, 10))
-        self.entry_jelszo = ctk.CTkEntry(beallitas_keret, placeholder_text="Jelszó", show="*", width=320, textvariable=self.jelszo_var)
+        self.entry_jelszo = ctk.CTkEntry(beallitas_keret, placeholder_text="Jelszó", show="*", width=320)
         self.entry_jelszo.grid(row=1, column=1, padx=10, pady=(0, 10))
-        self.entry_xml_kulcs = ctk.CTkEntry(beallitas_keret, placeholder_text="XML cserekulcs", width=320, textvariable=self.xml_kulcs_var)
+        self.entry_xml_kulcs = ctk.CTkEntry(beallitas_keret, placeholder_text="XML cserekulcs", width=320)
         self.entry_xml_kulcs.grid(row=2, column=0, padx=10, pady=(0, 10))
-        self.entry_sign_kulcs = ctk.CTkEntry(beallitas_keret, placeholder_text="Aláíró kulcs (sign key)", width=320, textvariable=self.sign_kulcs_var)
+        self.entry_sign_kulcs = ctk.CTkEntry(beallitas_keret, placeholder_text="Aláíró kulcs (sign key)", width=320)
         self.entry_sign_kulcs.grid(row=2, column=1, padx=10, pady=(0, 10))
-        self.entry_adoszam = ctk.CTkEntry(beallitas_keret, placeholder_text="Adószám (8 számjegy)", width=320, textvariable=self.adoszam_var)
+        self.entry_adoszam = ctk.CTkEntry(beallitas_keret, placeholder_text="Adószám (8 számjegy)", width=320)
         self.entry_adoszam.grid(row=3, column=0, padx=10, pady=(0, 15))
+        
+        # Élő esemény alapú kötés a placeholder text megtartásához!
+        self.entry_adoszam.bind("<KeyRelease>", lambda event: self._frissit_adozas_adoszam())
 
-        self.combo_kornyezet = ctk.CTkComboBox(beallitas_keret, values=["TEST", "PROD"], width=320, variable=self.kornyezet_var)
+        self.combo_kornyezet = ctk.CTkComboBox(beallitas_keret, values=["TEST", "PROD"], width=320)
         self.combo_kornyezet.grid(row=3, column=1, padx=10, pady=(0, 15))
         self.combo_kornyezet.set("TEST")
 
@@ -203,7 +197,7 @@ class DashboardTabs(ctk.CTkFrame):
                 return
 
             fejleszto_email = "balint.papp@cegnev.hu"
-            adoszam = self.entry_adoszam.get() if hasattr(self, 'entry_adoszam') else ""
+            adoszam = cast(Any, self.entry_adoszam).get() if hasattr(self, 'entry_adoszam') else ""
             targy = f"NAV M2M Asszisztens Diagnosztika - Adószám: {adoszam}"
 
             test_szoveg = (
@@ -217,7 +211,7 @@ class DashboardTabs(ctk.CTkFrame):
                 f"Generált requestSignature verzió: SHA3-512 ok\n"
             )
 
-            toplevel = cast(Any, self.winfo_toplevel()) # type: ignore
+            toplevel = cast(Any, cast(Any, self).winfo_toplevel())
             toplevel.clipboard_clear()
             toplevel.clipboard_append(test_szoveg)
 
@@ -229,6 +223,7 @@ class DashboardTabs(ctk.CTkFrame):
             except Exception:
                 messagebox.showinfo("Vágólapra mentve", "A levelezőt nem sikerült közvetlenül megnyitni, de a hibajelentést a vágólapra mentettem! Másold be egy levélbe balint.papp@cegnev.hu címre.")
 
+        # Az elgépelés itt lett véglegesen kijavítva!
         ctk.CTkButton(helpdesk_keret, text="✉️ Hibajelentés generálása és Vágólapra másolása", font=ctk.CTkFont(size=13, weight="bold"), fg_color="#8E44AD", hover_color="#732D91", height=38, command=hiba_bejelentes_vegrehajtasa).pack(pady=15)
 
     def _kapcsolat_teszt_inditasa(self) -> None:
@@ -250,13 +245,20 @@ class DashboardTabs(ctk.CTkFrame):
         def error_popup_wrapper(title: str, msg: str) -> None:
             messagebox.showerror(title, msg)
 
+        tech_user = cast(str, cast(Any, self.entry_tech_user).get()) if hasattr(self, 'entry_tech_user') else ""
+        password = cast(str, cast(Any, self.entry_jelszo).get()) if hasattr(self, 'entry_jelszo') else ""
+        sign_key = cast(str, cast(Any, self.entry_sign_kulcs).get()) if hasattr(self, 'entry_sign_kulcs') else ""
+        exchange_key = cast(str, cast(Any, self.entry_xml_kulcs).get()) if hasattr(self, 'entry_xml_kulcs') else ""
+        tax_number = cast(str, cast(Any, self.entry_adoszam).get()) if hasattr(self, 'entry_adoszam') else ""
+        environment = cast(str, cast(Any, self.combo_kornyezet).get()) if hasattr(self, 'combo_kornyezet') else "TEST"
+
         kapcsolat_teszt_inditasa(
-            tech_user=self.tech_user_var.get(),
-            password=self.jelszo_var.get(),
-            sign_key=self.sign_kulcs_var.get(),
-            exchange_key=self.xml_kulcs_var.get(),
-            tax_number=self.adoszam_var.get(),
-            environment=self.kornyezet_var.get(),
+            tech_user=tech_user,
+            password=password,
+            sign_key=sign_key,
+            exchange_key=exchange_key,
+            tax_number=tax_number,
+            environment=environment,
             allapot_uzenet=statusz_updater,
             show_error_popup=error_popup_wrapper,
             reset_buttons=reset_buttons
@@ -284,15 +286,21 @@ class DashboardTabs(ctk.CTkFrame):
         def yes_no_popup_wrapper(title: str, msg: str) -> bool:
             return bool(messagebox.askyesno(title, msg))
 
+        tech_user = cast(str, cast(Any, self.entry_tech_user).get()) if hasattr(self, 'entry_tech_user') else ""
+        password = cast(str, cast(Any, self.entry_jelszo).get()) if hasattr(self, 'entry_jelszo') else ""
+        sign_key = cast(str, cast(Any, self.entry_sign_kulcs).get()) if hasattr(self, 'entry_sign_kulcs') else ""
+        exchange_key = cast(str, cast(Any, self.entry_xml_kulcs).get()) if hasattr(self, 'entry_xml_kulcs') else ""
+        tax_number = cast(str, cast(Any, self.entry_adoszam).get()) if hasattr(self, 'entry_adoszam') else ""
+        environment = cast(str, cast(Any, self.combo_kornyezet).get()) if hasattr(self, 'combo_kornyezet') else "TEST"
         eafa_feltoltes = bool(self.chk_eafa_feltoltes.get()) if hasattr(self, 'chk_eafa_feltoltes') else False
 
         automatikus_feldolgozas_inditasa(
-            tech_user=self.tech_user_var.get(),
-            password=self.jelszo_var.get(),
-            sign_key=self.sign_kulcs_var.get(),
-            exchange_key=self.xml_kulcs_var.get(),
-            tax_number=self.adoszam_var.get(),
-            environment=self.kornyezet_var.get(),
+            tech_user=tech_user,
+            password=password,
+            sign_key=sign_key,
+            exchange_key=exchange_key,
+            tax_number=tax_number,
+            environment=environment,
             eafa_feltoltes=eafa_feltoltes,
             allapot_uzenet=statusz_updater,
             show_error_popup=error_popup_wrapper,

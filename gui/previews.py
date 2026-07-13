@@ -49,7 +49,8 @@ def excel_preview_megnyitas(ablak: Any) -> None:
 
     for lap_nev, lap_df in utolso_lapok_dict.items():
         tab = cast(Any, tabview).add(str(lap_nev))
-        preview_df = cast(pd.DataFrame, lap_df.head(25).copy())
+        # Kivettük a felesleges cast-ot, mert a lap_df már bizonyítottan DataFrame
+        preview_df = lap_df.head(25).copy()
 
         info = ctk.CTkLabel(
             tab,

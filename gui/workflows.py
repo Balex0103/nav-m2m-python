@@ -5,7 +5,7 @@ import os
 import re
 import threading
 import traceback
-from typing import Any, Callable, Optional
+from typing import Callable, Optional
 
 import pandas as pd
 

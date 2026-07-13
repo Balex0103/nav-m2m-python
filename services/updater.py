@@ -1,3 +1,4 @@
+# services/updater.py
 from __future__ import annotations
 
 import json
@@ -137,9 +138,10 @@ class UpdaterService:
             resp.raise_for_status()
             data: Any = resp.json()
             if isinstance(data, list) and len(data) > 0:
-                commit_obj: dict[str, Any] = data[0]
-                commit_data: dict[str, Any] = commit_obj.get("commit", {})
-                author_data: dict[str, Any] = commit_data.get("author", {})
+                data_list = cast(list[Any], data) # A Pylance list[Unknown] panasza itt lett kezelve
+                commit_obj = cast(dict[str, Any], data_list[0])
+                commit_data = cast(dict[str, Any], commit_obj.get("commit", {}))
+                author_data = cast(dict[str, Any], commit_data.get("author", {}))
                 return VerzioInfo(
                     repo_nev=repo_nev,
                     commit_sha=str(commit_obj.get("sha", ""))[:7],
