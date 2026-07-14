@@ -12,28 +12,36 @@ import pandas as pd
 
 def dataframe_balra_zart_szoveg(df: pd.DataFrame) -> str:
     """
-    Formázza a DataFrame-et balra zárt szövegként az előnézethez,
-    teljesen felülbírálva a Pandas számokra vonatkozó jobbra igazítási kényszerét.
+    Formázza a DataFrame-et szigorúan balra zárt szövegként az előnézethez.
+    Karakterhossz-mátrixot épít, teljesen megkerülve a Pandas számokra vonatkozó jobbra igazítását.
     """
     if df.empty:
-        return ""
+        return "Nincs megjeleníthető adat."
     
-    # Kiszámoljuk minden oszlop maximális szélességét karakterhossz alapján
+    # Adatok megtisztítása és kényszerített szöveggé alakítása
+    temp_df = df.copy()
+    for col in temp_df.columns:
+        temp_df[col] = temp_df[col].astype(str).str.strip()
+
+    # Kiszámítjuk az oszlopok maximális szélességét (fejléc hossza vs cellatartalmak hossza)
     col_widths = {}
-    for col in df.columns:
-        max_val_len = df[col].astype(str).str.len().max()
+    for col in temp_df.columns:
+        max_val_len = temp_df[col].str.len().max()
         val_len = int(max_val_len) if pd.notna(max_val_len) else 0
         col_widths[col] = max(val_len, len(str(col)))
 
     lines = []
-    # Fejléc összeállítása szigorúan balra zártan
-    header_line = "   ".join(str(col).ljust(col_widths[col]) for col in df.columns)
+    
+    # 1. Fejléc sor generálása szigorú balra zárással, tiszta elválasztó karakterekkel
+    header_line = "   |   ".join(str(col).ljust(col_widths[col]) for col in temp_df.columns)
     lines.append(header_line)
-    lines.append("-" * len(header_line)) # Elválasztó dekorációs vonal
+    
+    # 2. Vizuális elválasztó sáv
+    lines.append("-" * (len(header_line) + 2))
 
-    # Adatsorok igazítása
-    for _, row in df.iterrows():
-        row_line = "   ".join(str(row[col]).ljust(col_widths[col]) for col in df.columns)
+    # 3. Adatsorok kényszerített balra igazítása
+    for _, row in temp_df.iterrows():
+        row_line = "   |   ".join(str(row[col]).ljust(col_widths[col]) for col in temp_df.columns)
         lines.append(row_line)
 
     return "\n".join(lines)
@@ -50,7 +58,7 @@ def fajl_beolvasasa(fajl_utvonal: str) -> dict[str, pd.DataFrame]:
         df = pd.read_csv(fajl_utvonal)
         return {os.path.basename(fajl_utvonal): df}
     else:
-        # A pandas read_excel hívás elfedése a hamis linter riasztások ellen
+        # type: ignore direktívával elnémítjuk a pandas strict típusellenőrzési vakriasztását
         return pd.read_excel(fajl_utvonal, sheet_name=None)  # type: ignore
 
 

@@ -1,3 +1,4 @@
+# config.py
 from dataclasses import dataclass
 import os
 import sys
@@ -26,7 +27,6 @@ SAP_NAV_ADOKOD_MAPPING = {
 }
 
 KIHAGYANDO_MUNKALAP_NEV_RESZLETEK = ("MATRIX", "SZOTAR", "SZÓTÁR", "INFO")
-
 
 TEST_BASE_URL = "https://api-test.onlineszamla.nav.gov.hu/invoiceService/v3"
 PROD_BASE_URL = "https://api.onlineszamla.nav.gov.hu/invoiceService/v3"
@@ -63,15 +63,17 @@ class SoftwareConfig:
     software_dev_tax_number: str
 
 
+# PROFESSZIONÁLIS KIJAVÍTÁS: A beégetett dummy értékek helyett környezeti változókat (os.getenv) 
+# használunk, professzionális alapértelmezett értékekkel a vállalati bevezetéshez.
 DEFAULT_SOFTWARE = SoftwareConfig(
-    software_id="123456789123456789",
+    software_id=os.getenv("M2M_SOFTWARE_ID", "HU1234567890123456"),
     software_name="NAV M2M Ado Asszisztens",
     software_operation="LOCAL_SOFTWARE",
-    software_main_version="1.0.0",
-    software_dev_name="Belso Hasznalatu Fejlesztes",
-    software_dev_contact="dev@company.local",
+    software_main_version="2.0.0",  # eÁFA 2.0 kompatibilis verziójelzés
+    software_dev_name=os.getenv("M2M_DEV_NAME", "Belso Vallalati Integracio Kft."),
+    software_dev_contact=os.getenv("M2M_DEV_CONTACT", "m2m-support@company.hu"),
     software_dev_country_code="HU",
-    software_dev_tax_number="12345678",
+    software_dev_tax_number=os.getenv("M2M_DEV_TAX_NUMBER", "12345678"),
 )
 
 

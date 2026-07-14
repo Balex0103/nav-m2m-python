@@ -1,17 +1,50 @@
-.env
+# .gitignore
+# ====================================================================
+# Python cache és belső futtató környezetek
+# ====================================================================
 __pycache__/
 *.pyc
-dist/
-build/
-*.exe
-*.app
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
 
-# NAV XML kimeneti fájlok – soha ne kerüljenek a repóba!
-kesz_afa_bevallas.xml
-kesz_afa_bevallas_tervezet.xml
-sap_export/
-logs/
+# ====================================================================
+# IDE / Fejlesztői környezet és macOS rendszerfájlok
+# ====================================================================
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# ====================================================================
+# GDPR KRITIKUS KIZÁRÁSOK - Generált céges XML adatok és SAP exportok
+# ====================================================================
 *.xml
+sap_export/
+mock_data/
 
-# Érzékeny konfigurációs fájlok
+# ====================================================================
+# Érzékeny hitelesítési adatok, kulcsok és helyi cache fájlok
+# ====================================================================
+.env
 nav_verzio_cache.json
+*.env
+
+# ====================================================================
+# Tranzakciós és Rendszer szintű naplófájlok (Logs)
+# ====================================================================
+logs/
+*.log

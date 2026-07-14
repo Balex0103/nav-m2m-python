@@ -50,4 +50,3 @@ def van_valodi_nav_hitelesites(config: NavUserConfig) -> bool:
 
 def eafa_feltoltes_engedelyezve(config: NavUserConfig, engedelyezve: bool) -> bool:
     return engedelyezve and config.environment == "TEST"
-

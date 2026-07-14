@@ -1,4 +1,6 @@
+# smoke_test.py
 import datetime
+import os
 import re
 
 from config import NavUserConfig
@@ -8,13 +10,18 @@ from nav.validators import validate_user_config
 
 
 def build_test_config() -> NavUserConfig:
+    """
+    Összeállítja a teszt konfigurációt. 
+    BIZTONSÁGI JAVÍTÁS: Az adatok elsődlegesen a titkosított környezeti változókból 
+    töltődnek be, így kiküszöböljük az éles kulcsok véletlen repóba kerülését.
+    """
     return NavUserConfig(
-        tech_user="IDE_A_VALODI_TECHNIKAI_FELHASZNALO",
-        password="IDE_A_VALODI_JELSZO",
-        sign_key="IDE_A_VALODI_SIGN_KEY",
-        exchange_key="IDE_A_VALODI_EXCHANGE_KEY",
-        tax_number="12345678",
-        environment="TEST",
+        tech_user=os.getenv("NAV_TECH_USER", "IDE_A_VALODI_TECHNIKAI_FELHASZNALO"),
+        password=os.getenv("NAV_PASSWORD", "IDE_A_VALODI_JELSZO"),
+        sign_key=os.getenv("NAV_SIGN_KEY", "IDE_A_VALODI_SIGN_KEY"),
+        exchange_key=os.getenv("NAV_EXCHANGE_KEY", "IDE_A_VALODI_EXCHANGE_KEY"),
+        tax_number=os.getenv("NAV_TAX_NUMBER", "12345678"),
+        environment=os.getenv("NAV_ENVIRONMENT", "TEST"),
     )
 
 
@@ -27,13 +34,13 @@ def print_block(title: str, content: str) -> None:
 
 def redact_request_xml(xml_text: str) -> str:
     redacted = re.sub(
-        r"(<(?:[^:>]+:)?passwordHash[^>]*>)(.*?)(</(?:[^:>]+:)?passwordHash>)",
+        r"(<(?:[^:>]+:)?passwordHash[^>]*>)(.*?)(</?:[^:>]+:)?passwordHash>)",
         r"\1***REDACTED***\3",
         xml_text,
         flags=re.DOTALL,
     )
     return re.sub(
-        r"(<(?:[^:>]+:)?requestSignature[^>]*>)(.*?)(</(?:[^:>]+:)?requestSignature>)",
+        r"(<(?:[^:>]+:)?requestSignature[^>]*>)(.*?)(</?:[^:>]+:)?requestSignature>)",
         r"\1***REDACTED***\3",
         redacted,
         flags=re.DOTALL,

@@ -19,4 +19,3 @@ def legujabb_fajl_keresese(megfigyelt_mappa: str) -> Optional[str]:
     if not fajlok:
         return None
     return max(fajlok, key=os.path.getmtime)
-

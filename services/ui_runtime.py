@@ -129,4 +129,3 @@ def ask_yes_no_popup(cim: str, uzenet: str) -> bool:
     cast(Any, ablak).after(0, _ask)
     kesz.wait()
     return dontes["value"]
-
