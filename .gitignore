@@ -5,3 +5,13 @@ dist/
 build/
 *.exe
 *.app
+
+# NAV XML kimeneti fájlok – soha ne kerüljenek a repóba!
+kesz_afa_bevallas.xml
+kesz_afa_bevallas_tervezet.xml
+sap_export/
+logs/
+*.xml
+
+# Érzékeny konfigurációs fájlok
+nav_verzio_cache.json
