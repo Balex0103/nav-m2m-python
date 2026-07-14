@@ -1,0 +1,159 @@
+[2026-07-14 08:11:22] 
+[2026-07-14 08:11:22] ------------------------------------------------------------
+[2026-07-14 08:11:22] [Kezdés] Feldolgozás indítása...
+[2026-07-14 08:11:22] [Környezet] Aktív környezet: TEST
+[2026-07-14 08:11:22] [Mappa] Figyelt mappa: /Users/balesz/NAV_M2M_Python/sap_export
+[2026-07-14 08:11:22] ✅ [Fájl] Megtalálva: 01_pelda_fizetendo.xlsx
+[2026-07-14 08:11:22] [Beolvasás] Munkalapok beolvasása a memóriába...
+[2026-07-14 08:11:22] ℹ️ [Szűrés] 'Bevallás Fejadatok' munkalap fejadatként kezelve, nem tételes analitika.
+[2026-07-14 08:11:22] ℹ️ [Szűrés] 'Analitika Adatok' munkalap kihagyva, mert nem teljes áfa analitika. Hiányzó oszlopok: Afa_Ertek, Netto_Ertek, Szamlaszam, Teljesites_Datuma
+[2026-07-14 08:11:22] ℹ️ [Szűrés] 'Értékek' munkalap kihagyva (nem áfa analitika).
+[2026-07-14 08:11:22] ❌ [HIBA] Nincs feldolgozható áfa munkalap az Excelben a szűrés után.
+[2026-07-14 08:11:22] ❌ [KRITIKUS HIBA] 
+[2026-07-14 08:11:22] Traceback (most recent call last):
+  File "/Users/balesz/NAV_M2M_Python/gui/workflows.py", line 227, in feldolgozas_a_hatterben
+    show_error_popup("Adathiba", hiba)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/Users/balesz/NAV_M2M_Python/gui/dashboard_tabs.py", line 410, in error_popup_wrapper
+    messagebox.showerror(title, msg)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/tkinter/messagebox.py", line 98, in showerror
+    return _show(title, message, ERROR, OK, **options)
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/tkinter/messagebox.py", line 76, in _show
+    res = Message(**options).show()
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/tkinter/commondialog.py", line 45, in show
+    s = master.tk.call(self.command, *master._options(self.options))
+_tkinter.TclError
+
+[2026-07-14 08:11:51] ⚠️ Nincs még megtekinthető XML előnézet.
+[2026-07-14 08:32:10] 
+[2026-07-14 08:32:10] ------------------------------------------------------------
+[2026-07-14 08:32:10] [Kezdés] Feldolgozás indítása...
+[2026-07-14 08:32:10] ❌ [KONFIG HIBA] A technikai felhasználónév kötelező.
+[2026-07-14 08:32:11] ❌ [KRITIKUS HIBA] 
+[2026-07-14 08:32:11] Traceback (most recent call last):
+  File "/Users/balesz/NAV_M2M_Python/gui/workflows.py", line 143, in feldolgozas_a_hatterben
+    show_error_popup("Konfigurációs hiba", config_hiba)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/balesz/NAV_M2M_Python/gui/dashboard_tabs.py", line 410, in error_popup_wrapper
+    messagebox.showerror(title, msg)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/tkinter/messagebox.py", line 98, in showerror
+    return _show(title, message, ERROR, OK, **options)
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/tkinter/messagebox.py", line 76, in _show
+    res = Message(**options).show()
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/tkinter/commondialog.py", line 45, in show
+    s = master.tk.call(self.command, *master._options(self.options))
+_tkinter.TclError
+
+[2026-07-14 08:32:37] 
+[2026-07-14 08:32:37] ------------------------------------------------------------
+[2026-07-14 08:32:37] [Kezdés] Feldolgozás indítása...
+[2026-07-14 08:32:37] [Környezet] Aktív környezet: TEST
+[2026-07-14 08:32:37] [Mappa] Figyelt mappa: /Users/balesz/NAV_M2M_Python/sap_export
+[2026-07-14 08:32:37] ✅ [Fájl] Megtalálva: 01_pelda_fizetendo.xlsx
+[2026-07-14 08:32:37] [Beolvasás] Munkalapok beolvasása a memóriába...
+[2026-07-14 08:32:37] ℹ️ [Szűrés] 'Bevallás Fejadatok' munkalap fejadatként kezelve, nem tételes analitika.
+[2026-07-14 08:32:37] ℹ️ [Szűrés] 'Analitika Adatok' munkalap kihagyva, mert nem teljes áfa analitika. Hiányzó oszlopok: Afa_Ertek, Netto_Ertek, Szamlaszam, Teljesites_Datuma
+[2026-07-14 08:32:37] ℹ️ [Szűrés] 'Értékek' munkalap kihagyva (nem áfa analitika).
+[2026-07-14 08:32:37] ❌ [HIBA] Nincs feldolgozható áfa munkalap az Excelben a szűrés után.
+[2026-07-14 08:32:37] ❌ [KRITIKUS HIBA] 
+[2026-07-14 08:32:37] Traceback (most recent call last):
+  File "/Users/balesz/NAV_M2M_Python/gui/workflows.py", line 227, in feldolgozas_a_hatterben
+    show_error_popup("Adathiba", hiba)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/Users/balesz/NAV_M2M_Python/gui/dashboard_tabs.py", line 410, in error_popup_wrapper
+    messagebox.showerror(title, msg)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/tkinter/messagebox.py", line 98, in showerror
+    return _show(title, message, ERROR, OK, **options)
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/tkinter/messagebox.py", line 76, in _show
+    res = Message(**options).show()
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/tkinter/commondialog.py", line 45, in show
+    s = master.tk.call(self.command, *master._options(self.options))
+_tkinter.TclError
+
+[2026-07-14 08:32:53] ⚠️ Nincs még megtekinthető XML előnézet.
+[2026-07-14 08:32:54] ⚠️ Nincs még megtekinthető XML előnézet.
+[2026-07-14 08:32:54] ⚠️ Nincs még megtekinthető XML előnézet.
+[2026-07-14 08:32:54] ⚠️ Nincs még megtekinthető XML előnézet.
+[2026-07-14 08:32:55] ⚠️ Nincs még megtekinthető XML előnézet.
+[2026-07-14 08:32:55] ⚠️ Nincs még megtekinthető XML előnézet.
+[2026-07-14 08:32:55] ⚠️ Nincs még megtekinthető XML előnézet.
+[2026-07-14 08:32:55] ⚠️ Nincs még megtekinthető XML előnézet.
+[2026-07-14 08:32:55] ⚠️ Nincs még megtekinthető XML előnézet.
+[2026-07-14 08:33:36] 
+[2026-07-14 08:33:36] ------------------------------------------------------------
+[2026-07-14 08:33:36] [Kezdés] Feldolgozás indítása...
+[2026-07-14 08:33:36] [Környezet] Aktív környezet: TEST
+[2026-07-14 08:33:36] [Mappa] Figyelt mappa: /Users/balesz/NAV_M2M_Python/sap_export
+[2026-07-14 08:33:36] ✅ [Fájl] Megtalálva: 01_példa_fizetendő.xlsx
+[2026-07-14 08:33:36] [Beolvasás] Munkalapok beolvasása a memóriába...
+[2026-07-14 08:33:36] ℹ️ [Szűrés] 'Bevallás Fejadatok' munkalap fejadatként kezelve, nem tételes analitika.
+[2026-07-14 08:33:36] ℹ️ [Szűrés] 'Analitika Adatok' munkalap kihagyva, mert nem teljes áfa analitika. Hiányzó oszlopok: Afa_Ertek, Netto_Ertek, Szamlaszam, Teljesites_Datuma
+[2026-07-14 08:33:36] ℹ️ [Szűrés] 'Értékek' munkalap kihagyva (nem áfa analitika).
+[2026-07-14 08:33:36] ❌ [HIBA] Nincs feldolgozható áfa munkalap az Excelben a szűrés után.
+[2026-07-14 08:33:36] ❌ [KRITIKUS HIBA] 
+[2026-07-14 08:33:36] Traceback (most recent call last):
+  File "/Users/balesz/NAV_M2M_Python/gui/workflows.py", line 227, in feldolgozas_a_hatterben
+    show_error_popup("Adathiba", hiba)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/Users/balesz/NAV_M2M_Python/gui/dashboard_tabs.py", line 410, in error_popup_wrapper
+    messagebox.showerror(title, msg)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/tkinter/messagebox.py", line 98, in showerror
+    return _show(title, message, ERROR, OK, **options)
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/tkinter/messagebox.py", line 76, in _show
+    res = Message(**options).show()
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/tkinter/commondialog.py", line 45, in show
+    s = master.tk.call(self.command, *master._options(self.options))
+_tkinter.TclError
+
+[2026-07-14 08:33:58] ⚠️ Nincs még megtekinthető XML előnézet.
+[2026-07-14 09:01:41] 
+[2026-07-14 09:01:41] ------------------------------------------------------------
+[2026-07-14 09:01:41] [Kezdés] Feldolgozás indítása...
+[2026-07-14 09:01:41] [Környezet] Aktív környezet: TEST
+[2026-07-14 09:01:41] [Mappa] Figyelt mappa: /Users/balesz/NAV_M2M_Python/sap_export
+[2026-07-14 09:01:41] ✅ [Fájl] Megtalálva: 01_pelda_fizetendo.xlsx
+[2026-07-14 09:01:41] [Beolvasás] Munkalapok beolvasása a memóriába...
+[2026-07-14 09:01:41] ℹ️ [Szűrés] 'Bevallás Fejadatok' munkalap fejadatként kezelve, nem tételes analitika.
+[2026-07-14 09:01:41] ℹ️ [Szűrés] 'Analitika Adatok' munkalap kihagyva, mert nem teljes áfa analitika. Hiányzó oszlopok: Afa_Ertek, Netto_Ertek, Szamlaszam, Teljesites_Datuma
+[2026-07-14 09:01:41] ℹ️ [Szűrés] 'Értékek' munkalap kihagyva (nem áfa analitika).
+[2026-07-14 09:01:41] ❌ [HIBA] Nincs feldolgozható áfa munkalap az Excelben a szűrés után.
+[2026-07-14 09:02:03] ⚠️ Nincs még megtekinthető XML előnézet.
+[2026-07-14 09:02:13] 
+[2026-07-14 09:02:13] ------------------------------------------------------------
+[2026-07-14 09:02:13] [Kapcsolat teszt] eÁFA M2M kapcsolat előellenőrzés indítása...
+[2026-07-14 09:02:13] [Környezet] Aktív környezet: PROD
+[2026-07-14 09:02:13] [Adószám] 87654321
+[2026-07-14 09:02:13] [Kapcsolat teszt] eÁFA v2 QueryTaxCodeCatalog request előállítása...
+[2026-07-14 09:02:13] ✅ [Kapcsolat teszt] eÁFA request sikeresen legenerálva.
+[2026-07-14 09:02:13] [eÁFA URL] https://api.eafa.nav.gov.hu/v1/xmlapi/analyticsService/v1/queryTaxCodeCatalog
+[2026-07-14 09:02:13] [XML minta] <?xml version='1.0' encoding='utf-8'?>
+<QueryTaxCodeCatalogRequest xmlns="http://schemas.nav.gov.hu/EAR/1.0/api" xmlns:common="http://schemas.nav.gov.hu/NTCA/1.0/common"><common:header><common:requestId>M2M_FJ5BVL63PQ3ZS6K</common:requestId><common:timestamp>2026-07-14T07:02:13Z</common:timestamp><common:requestVersion>2.0</common:requestVersion><common:headerVersion>1.0</common:headerVersion></common:header><common:user><common:login>ewdwd</common:login><common:passwordHash cryptoType="SHA-512">***REDACTED***</common:passwordHash><common:taxNumber>87654321</common:taxNumber><common:requestSignature cryptoType="SHA3-512">***REDACTED***</common:requestSignature></common:user><software><softwareId>123456789123456789</softwareId><softwareName>NAV M2M Ado Asszisztens</softwareName><softwareOperation>LOCAL_SOFTWARE</softwareOperation><softwareMainVersion>1.0.0</softwareMainVersion
+[2026-07-14 09:02:13] ℹ️ [Kapcsolat teszt] Valódi NAV kulcsok még nincsenek megadva.
+[2026-07-14 09:02:13] ℹ️ [Kapcsolat teszt] A valódi eÁFA hívás kihagyva, csak előellenőrzés történt.
+[2026-07-14 09:02:16] 
+[2026-07-14 09:02:16] ------------------------------------------------------------
+[2026-07-14 09:02:16] [Kapcsolat teszt] eÁFA M2M kapcsolat előellenőrzés indítása...
+[2026-07-14 09:02:16] [Környezet] Aktív környezet: PROD
+[2026-07-14 09:02:16] [Adószám] 87654321
+[2026-07-14 09:02:16] [Kapcsolat teszt] eÁFA v2 QueryTaxCodeCatalog request előállítása...
+[2026-07-14 09:02:16] ✅ [Kapcsolat teszt] eÁFA request sikeresen legenerálva.
+[2026-07-14 09:02:16] [eÁFA URL] https://api.eafa.nav.gov.hu/v1/xmlapi/analyticsService/v1/queryTaxCodeCatalog
+[2026-07-14 09:02:16] [XML minta] <?xml version='1.0' encoding='utf-8'?>
+<QueryTaxCodeCatalogRequest xmlns="http://schemas.nav.gov.hu/EAR/1.0/api" xmlns:common="http://schemas.nav.gov.hu/NTCA/1.0/common"><common:header><common:requestId>M2M_1Y93XNGGQKK5LOR</common:requestId><common:timestamp>2026-07-14T07:02:16Z</common:timestamp><common:requestVersion>2.0</common:requestVersion><common:headerVersion>1.0</common:headerVersion></common:header><common:user><common:login>ewdwd</common:login><common:passwordHash cryptoType="SHA-512">***REDACTED***</common:passwordHash><common:taxNumber>87654321</common:taxNumber><common:requestSignature cryptoType="SHA3-512">***REDACTED***</common:requestSignature></common:user><software><softwareId>123456789123456789</softwareId><softwareName>NAV M2M Ado Asszisztens</softwareName><softwareOperation>LOCAL_SOFTWARE</softwareOperation><softwareMainVersion>1.0.0</softwareMainVersion
+[2026-07-14 09:02:16] ℹ️ [Kapcsolat teszt] Valódi NAV kulcsok még nincsenek megadva.
+[2026-07-14 09:02:16] ℹ️ [Kapcsolat teszt] A valódi eÁFA hívás kihagyva, csak előellenőrzés történt.
+[2026-07-14 09:02:37] 
+[2026-07-14 09:02:37] ------------------------------------------------------------
+[2026-07-14 09:02:37] [Kezdés] Feldolgozás indítása...
+[2026-07-14 09:02:37] [Környezet] Aktív környezet: PROD
+[2026-07-14 09:02:37] [Mappa] Figyelt mappa: /Users/balesz/NAV_M2M_Python/sap_export
+[2026-07-14 09:02:37] ✅ [Fájl] Megtalálva: 01_pelda_fizetendo.xlsx
+[2026-07-14 09:02:37] [Beolvasás] Munkalapok beolvasása a memóriába...
+[2026-07-14 09:02:37] ℹ️ [Szűrés] 'Bevallás Fejadatok' munkalap fejadatként kezelve, nem tételes analitika.
+[2026-07-14 09:02:37] ℹ️ [Szűrés] 'Analitika Adatok' munkalap kihagyva, mert nem teljes áfa analitika. Hiányzó oszlopok: Afa_Ertek, Netto_Ertek, Szamlaszam, Teljesites_Datuma
+[2026-07-14 09:02:37] ℹ️ [Szűrés] 'Értékek' munkalap kihagyva (nem áfa analitika).
+[2026-07-14 09:02:37] ❌ [HIBA] Nincs feldolgozható áfa munkalap az Excelben a szűrés után.

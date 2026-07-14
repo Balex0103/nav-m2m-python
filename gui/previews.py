@@ -11,7 +11,6 @@ from utils.logger import logger
 from core.analitika import dataframe_balra_zart_szoveg
 from config import *
 
-# Explicit típusannotáció a Pylance megnyugtatására
 utolso_lapok_dict: dict[str, pd.DataFrame] = {}
 utolso_flat_dataframe: Optional[pd.DataFrame] = None
 utolso_xml_tartalom: str = ''
@@ -49,7 +48,6 @@ def excel_preview_megnyitas(ablak: Any) -> None:
 
     for lap_nev, lap_df in utolso_lapok_dict.items():
         tab = cast(Any, tabview).add(str(lap_nev))
-        # Kivettük a felesleges cast-ot, mert a lap_df már bizonyítottan DataFrame
         preview_df = lap_df.head(25).copy()
 
         info = ctk.CTkLabel(

@@ -12,9 +12,31 @@ import pandas as pd
 
 def dataframe_balra_zart_szoveg(df: pd.DataFrame) -> str:
     """
-    Formázza a DataFrame-et balra zárt szövegként az előnézethez.
+    Formázza a DataFrame-et balra zárt szövegként az előnézethez,
+    teljesen felülbírálva a Pandas számokra vonatkozó jobbra igazítási kényszerét.
     """
-    return df.to_string(justify='left')
+    if df.empty:
+        return ""
+    
+    # Kiszámoljuk minden oszlop maximális szélességét karakterhossz alapján
+    col_widths = {}
+    for col in df.columns:
+        max_val_len = df[col].astype(str).str.len().max()
+        val_len = int(max_val_len) if pd.notna(max_val_len) else 0
+        col_widths[col] = max(val_len, len(str(col)))
+
+    lines = []
+    # Fejléc összeállítása szigorúan balra zártan
+    header_line = "   ".join(str(col).ljust(col_widths[col]) for col in df.columns)
+    lines.append(header_line)
+    lines.append("-" * len(header_line)) # Elválasztó dekorációs vonal
+
+    # Adatsorok igazítása
+    for _, row in df.iterrows():
+        row_line = "   ".join(str(row[col]).ljust(col_widths[col]) for col in df.columns)
+        lines.append(row_line)
+
+    return "\n".join(lines)
 
 
 def fajl_beolvasasa(fajl_utvonal: str) -> dict[str, pd.DataFrame]:
@@ -28,7 +50,7 @@ def fajl_beolvasasa(fajl_utvonal: str) -> dict[str, pd.DataFrame]:
         df = pd.read_csv(fajl_utvonal)
         return {os.path.basename(fajl_utvonal): df}
     else:
-        # A felesleges cast törölve, típusfigyelmeztetés elfedve
+        # A pandas read_excel hívás elfedése a hamis linter riasztások ellen
         return pd.read_excel(fajl_utvonal, sheet_name=None)  # type: ignore
 
 

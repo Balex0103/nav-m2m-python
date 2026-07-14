@@ -56,10 +56,10 @@ class DashboardTabs(ctk.CTkFrame):
                 else:
                     log_ctrl.insert("end", msg + "\n")
                 log_ctrl.see("end")
-        cast(Any, Logger).set_callback(log_callback)
+        cast(Any, Logger).set_callback(log_callback) # type: ignore
 
     def _sablon_letoltese_vegrehajtasa(self) -> None:
-        """Legenerálja, megformázza és igazi excel lenyílókkal látja el a mintafájlt."""
+        """Legenerálja, megformázza és komplex magyarázó és valósághű mintasorokkal látja el a fájlt."""
         try:
             from openpyxl.styles import Font, PatternFill, Alignment # type: ignore
             from openpyxl.worksheet.datavalidation import DataValidation # type: ignore
@@ -70,8 +70,8 @@ class DashboardTabs(ctk.CTkFrame):
                 ["", "Bevallás típusa", "declarationType", "NONE", "declarationTypeCombo"],
                 ["", "Bevallás fajtája", "declarationKind", "NONE", "declarationKindCombo"],
                 ["", "Bevallás gyakorisága", "declarationFrequency", "MONTHLY", "declarationFrequencyCombo"],
-                ["", "Bevallási időszak kezdete", "declarationPeriodStart", "2025-10-01", "periodStartPicker"],
-                ["", "Bevallási időszak vége", "declarationPeriodEnd", "2025-10-31", "periodEndPicker"],
+                ["", "Bevallási időszak kezdete", "declarationPeriodStart", "2026-07-01", "periodStartPicker"],
+                ["", "Bevallási időszak vége", "declarationPeriodEnd", "2026-07-31", "periodEndPicker"],
                 ["", "A benyújtott bevallás verziószáma", "version", "1", "versionField"],
                 ["", "Bevallás jellege", "declarationMethod", "BASE", "declarationMethodCombo"],
                 ["", "NAV kiértesítés szerinti javítás.", "navCorrection", "false", "navCorrectionCheck"]
@@ -83,7 +83,10 @@ class DashboardTabs(ctk.CTkFrame):
                 ["", "Főkönyvi számlaszám", "Főkönyvi feladás dátuma", "Főkönyvi könyvelés egyedi azonosítója", "", "", "", "", "Partner ÁFA szerinti státusza", "Partner adószáma", "", "", "", "Partner neve", "Partner címadatai", "", "", "", "A tétel standard adókódja", "A tétel vállalati adókódja", "A tétel adózási pozíciója", "", "", "", "A tétel adózási pozíciója", ""],
                 ["", "", "", "", "", "", "", "", "", "Belföldi adószám adatok", "", "Közösségi adószám", "Harmadik országbeli adóazonosító", "", "Országkód", "Régió, tartomány kódja", "Irányítószám", "Város", "Cím", "", "", "Áfa pozíció jelölése", "Adó alapja", "Adó összege", "Levonási adatok", "", "Áfa pozíció jelölése", "Adó alapja", "Adó összege", "Levonási adatok"],
                 ["", "", "", "", "", "", "", "", "", "Az adószám 8 jegyű törzsszáma", "Csoport tag adószámának 8 jegyű törzsszáma", "", "", "", "", "", "", "", "", "", "", "", "", "", "Levonási hányados", "Levonási összeg", "", "", "Levonási hányados", "Levonási összeg"],
-                ["lineNumber", "glAccountId", "glPostingDate", "glTransactionId", "sourceDocumentId", "sourceDocumentIssueDate", "sourceDocumentType", "taxpointDate", "partnerStatus", "customerTaxNumber", "groupMemberTaxNumber", "communityTaxNumber", "thirdCountryTaxId", "partnerName", "countryCode", "region", "postalCode", "city", "streetAddress", "standardTaxCode", "ownTaxCode", "positionType", "taxBase", "taxAmount", "deductionCondition", "deductionRatio", "deductedAmount"]
+                ["lineNumber", "glAccountId", "glPostingDate", "glTransactionId", "sourceDocumentId", "sourceDocumentIssueDate", "sourceDocumentType", "taxpointDate", "partnerStatus", "customerTaxNumber", "groupMemberTaxNumber", "communityTaxNumber", "thirdCountryTaxId", "partnerName", "countryCode", "region", "postalCode", "city", "streetAddress", "standardTaxCode", "ownTaxCode", "positionType", "taxBase", "taxAmount", "deductionCondition", "deductionRatio", "deductedAmount"],
+                # Hivatalos, komplex könyvelési mintasorok beágyazása a dolgozók munkájának segítésére:
+                ["1", "466100", "2026-07-10", "TR-99012", "INV-2026-0001", "2026-07-05", "INVOICE", "2026-07-08", "DOMESTIC", "12345678", "", "", "", "Győri Partner Vállalat Kft.", "HU", "Győr-Moson-Sopron", "9021", "Győr", "Városház tér 1.", "DOM_L_GENERAL", "SAP_A1", "DEDUCTIBLE", "1500000", "405000", "", "", "", ""],
+                ["2", "467100", "2026-07-14", "TR-99015", "INV-2026-0002", "2026-07-12", "INVOICE", "2026-07-12", "OTHER", "", "", "DE812345678", "", "Minta Import Beszállító GmbH", "DE", "", "10117", "Berlin", "Friedrichstrasse 12.", "LEV_KOZ", "SAP_E1", "PAYABLE", "3200000", "864000", "", "", "", ""]
             ]
             df_analitika = pd.DataFrame(analitika_rows)
 
@@ -102,9 +105,9 @@ class DashboardTabs(ctk.CTkFrame):
             asztal_utvonal = os.path.join(os.path.expanduser("~"), "Desktop", "01_pelda_fizetendo.xlsx")
             
             with pd.ExcelWriter(asztal_utvonal, engine='openpyxl') as writer:
-                df_fejadat.to_excel(writer, sheet_name='Bevallás Fejadatok', index=False, header=False)
-                df_analitika.to_excel(writer, sheet_name='Analitika Adatok', index=False, header=False)
-                df_ertekek.to_excel(writer, sheet_name='Értékek', index=False)
+                df_fejadat.to_excel(writer, sheet_name='Bevallás Fejadatok', index=False, header=False) # type: ignore
+                df_analitika.to_excel(writer, sheet_name='Analitika Adatok', index=False, header=False) # type: ignore
+                df_ertekek.to_excel(writer, sheet_name='Értékek', index=False) # type: ignore
 
                 workbook = writer.book
                 
@@ -125,7 +128,6 @@ class DashboardTabs(ctk.CTkFrame):
                 ws1.column_dimensions['D'].width = 18
                 ws1.column_dimensions['E'].width = 25
 
-                # Igazi Excel legördülő listák (Data Validation) bekötése az Értékek fülről!
                 dv_dec_type = DataValidation(type="list", formula1="=Értékek!$A$2:$A$8", allow_blank=True)
                 dv_dec_kind = DataValidation(type="list", formula1="=Értékek!$B$2:$B$5", allow_blank=True)
                 dv_dec_freq = DataValidation(type="list", formula1="=Értékek!$C$2:$C$4", allow_blank=True)
@@ -167,7 +169,6 @@ class DashboardTabs(ctk.CTkFrame):
                 for col in ws2.columns:
                     ws2.column_dimensions[col[0].column_letter].width = 22
 
-                # Analitika oszlopok interaktív lenyílói (Egész oszlopokra kiterjesztve a 6. sortól a 500. sorig)
                 dv_doc_type = DataValidation(type="list", formula1="=Értékek!$F$2:$F$5", allow_blank=True)
                 dv_part_stat = DataValidation(type="list", formula1="=Értékek!$G$2:$G$5", allow_blank=True)
                 dv_pos_type = DataValidation(type="list", formula1="=Értékek!$H$2:$H$4", allow_blank=True)
@@ -180,8 +181,8 @@ class DashboardTabs(ctk.CTkFrame):
                 dv_part_stat.add("I6:I500")
                 dv_pos_type.add("U6:U500")
 
-            messagebox.showinfo("Sikeres letöltés", f"A hivatalos, interaktív lenyílókkal ellátott NAV eÁFA mintafájl elkészült az Asztalra:\n\n{asztal_utvonal}")
-            logger.info(f"✅ [Sablon] Interaktív többlapos adatsablon legenerálva: {asztal_utvonal}")
+            messagebox.showinfo("Sikeres letöltés", f"A komplex, interaktív lenyílókkal és mintasorokkal ellátott Excel sablon elkészült az Asztalra:\n\n{asztal_utvonal}")
+            logger.info(f"✅ [Sablon] Interaktív többlapos adatsablon mintákkal legenerálva: {asztal_utvonal}")
         except Exception as e:
             messagebox.showerror("Hiba", f"Nem sikerült a sablon mentése: {str(e)}")
 
@@ -190,8 +191,8 @@ class DashboardTabs(ctk.CTkFrame):
         gomb_sor.pack(fill="x", pady=(0, 8))
 
         self.btn_feldolgoz = ctk.CTkButton(
-            gomb_sor, text="▶️  Feldolgozás indítása",
-            width=150, fg_color="#2e7d32", hover_color="#1b5e20",
+            gomb_sor, text="▶️  Mappa ellenőrzése és Feldolgozás indítása",
+            width=180, fg_color="#2e7d32", hover_color="#1b5e20",
             command=self._feldolgozas_inditas,
         )
         self.btn_feldolgoz.pack(side="left", padx=4)
@@ -295,7 +296,7 @@ class DashboardTabs(ctk.CTkFrame):
         
         def _on_adoszam_keyup(event: Any) -> None:
             self._frissit_adozas_adoszam()
-        self.entry_adoszam.bind("<KeyRelease>", _on_adoszam_keyup)
+        self.entry_adoszam.bind("<KeyRelease>", _on_adoszam_keyup) # type: ignore
 
         self.combo_kornyezet = ctk.CTkComboBox(beallitas_keret, values=["TEST", "PROD"], width=320)
         self.combo_kornyezet.grid(row=3, column=1, padx=10, pady=(0, 15))
