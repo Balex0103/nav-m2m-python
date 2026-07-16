@@ -32,7 +32,8 @@ class DashboardTabs(ctk.CTkFrame):
         self._tabview_letrehozasa()
 
     def _tabview_letrehozasa(self) -> None:
-        self.tabs = ctk.CTkTabview(self, anchor="nw")
+        # BIZTONSÁGI UX FEJLESZTÉS: Összekötjük a fülváltást a dinamikus eseménykezelővel!
+        self.tabs = ctk.CTkTabview(self, anchor="nw", command=self._on_tab_changed)
         self.tabs.pack(fill="both", expand=True)
 
         tab_feldolgozas  = self.tabs.add("📂 Feldolgozás")
@@ -59,6 +60,11 @@ class DashboardTabs(ctk.CTkFrame):
                     log_ctrl.insert("end", msg + "\n")
                 log_ctrl.see("end")
         cast(Any, Logger).set_callback(log_callback) # type: ignore
+
+    def _on_tab_changed(self) -> None:
+        """Ha a felhasználó átkattint az Előzmények fülre, azonnal újraolvassuk a CSV-t."""
+        if self.tabs.get() == "📋 Előzmények":
+            self._frissit_elozmenyek_lista()
 
     def _sablon_letoltese_vegrehajtasa(self) -> None:
         """Meghívja a külső template generátort a komplex, formázott sablon előállításához."""
@@ -187,24 +193,42 @@ class DashboardTabs(ctk.CTkFrame):
             ctk.CTkLabel(grid_keret, text=f"⏳ {napok} nap van hátra", font=ctk.CTkFont(size=12, weight="bold"), text_color=szin).grid(row=idx, column=3, sticky="w", pady=6, padx=20)
 
     def _elozmeny_tab_felep(self, tab: Any) -> None:
-        """Dinamikus NAV Kommunikációs Történet a központi history_log.csv alapján."""
+        """Dinamikus NAV Kommunikációs Történet gyűjtővázának felépítése."""
         elozmeny_keret = ctk.CTkFrame(tab, fg_color="transparent")
         elozmeny_keret.pack(fill="both", expand=True, padx=10, pady=10)
 
-        lista_keret = ctk.CTkFrame(elozmeny_keret, width=260, fg_color="#222222")
-        lista_keret.pack(side="left", fill="y", padx=(0, 10))
-        lista_keret.pack_propagate(False)
+        # Bal oldali listázó sáv a bejegyzéseknek
+        self.lista_keret = ctk.CTkFrame(elozmeny_keret, width=260, fg_color="#222222")
+        self.lista_keret.pack(side="left", fill="y", padx=(0, 10))
+        self.lista_keret.pack_propagate(False)
 
-        ctk.CTkLabel(lista_keret, text="Tranzakciós naplók (CSV)", font=ctk.CTkFont(size=12, weight="bold")).pack(pady=5)
+        ctk.CTkLabel(self.lista_keret, text="Tranzakciós naplók (CSV)", font=ctk.CTkFont(size=12, weight="bold")).pack(pady=5)
 
-        naplo_megtekinto = ctk.CTkTextbox(elozmeny_keret, font=ctk.CTkFont(size=11, family="Courier New"))
-        naplo_megtekinto.pack(side="right", fill="both", expand=True)
-        naplo_megtekinto.insert("0.0", "Kérlek, válassz ki egy tranzakciót a bal oldali sávból...")
-        naplo_megtekinto.configure(state="disabled")
+        # Ebbe a dinamikus belső konténerbe pakoljuk a gombokat, hogy bármikor letakarítható legyen
+        self.elozmeny_gombok_kontener = ctk.CTkFrame(self.lista_keret, fg_color="transparent")
+        self.elozmeny_gombok_kontener.pack(fill="both", expand=True)
+
+        # Jobb oldali szöveges megtekintő ablak
+        self.naplo_megtekinto = ctk.CTkTextbox(elozmeny_keret, font=ctk.CTkFont(size=11, family="Courier New"))
+        self.naplo_megtekinto.pack(side="right", fill="both", expand=True)
+        self.naplo_megtekinto.insert("0.0", "Kérlek, válassz ki egy tranzakciót a bal oldali sávból...")
+        self.naplo_megtekinto.configure(state="disabled")
+
+        # Első induláskori beolvasás
+        self._frissit_elozmenyek_lista()
+
+    def _frissit_elozmenyek_lista(self) -> None:
+        """Újraolvassa a history_log.csv állományt és valós időben frissíti a gombokat a felületen."""
+        if not hasattr(self, 'elozmeny_gombok_kontener'):
+            return
+
+        # Letakarítjuk a korábbi gombokat a memóriából
+        for widget in self.elozmeny_gombok_kontener.winfo_children():
+            widget.destroy()
 
         def _naplo_reszletek_megnyitasa(row: dict[str, str]) -> None:
-            naplo_megtekinto.configure(state="normal")
-            naplo_megtekinto.delete("1.0", "end")
+            self.naplo_megtekinto.configure(state="normal")
+            self.naplo_megtekinto.delete("1.0", "end")
             
             reszletek = (
                 f"==================================================\n"
@@ -219,13 +243,13 @@ class DashboardTabs(ctk.CTkFrame):
                 f"--------------------------------------------------\n"
                 f"📝 Rendszerüzenet:\n{row.get('message', '')}\n"
                 f"--------------------------------------------------\n"
-                f"🛠️ Technikai részletek és XML válasz:\n\n{row.get('details', '')}\n"
+                f"🛠️ Technikai Részletek / XSD Hiba leírása:\n\n{row.get('details', '')}\n"
                 f"==================================================\n"
-                f"XSD sémaellenőrzés: eÁFA v2.0 specifikáció szerint lefutott.\n"
+                f"XSD sémaellenőrzés: eÁFA v2.0 specifikáció szerint futtatva.\n"
                 f"==================================================\n"
             )
-            naplo_megtekinto.insert("0.0", reszletek)
-            naplo_megtekinto.configure(state="disabled")
+            self.naplo_megtekinto.insert("0.0", reszletek)
+            self.naplo_megtekinto.configure(state="disabled")
 
         try:
             tranzakciok = read_history(100)
@@ -236,15 +260,15 @@ class DashboardTabs(ctk.CTkFrame):
                     gomb_szoveg = f"[{idopont}] {row.get('action', '')} ({row.get('status', '')})"
                     
                     btn = ctk.CTkButton(
-                        lista_keret, text=gomb_szoveg,
+                        self.elozmeny_gombok_kontener, text=gomb_szoveg,
                         fg_color="#333333", hover_color="#444444", height=32, anchor="w",
                         command=lambda r=row: _naplo_reszletek_megnyitasa(r)
                     )
                     btn.pack(fill="x", padx=6, pady=2)
             else:
-                ctk.CTkLabel(lista_keret, text="Nincsenek mentett naplók.", text_color="gray").pack(pady=10)
+                ctk.CTkLabel(self.elozmeny_gombok_kontener, text="Nincsenek mentett naplók.", text_color="gray").pack(pady=10)
         except Exception:
-            ctk.CTkLabel(lista_keret, text="Hiba a CSV olvasásakor.", text_color="#ef5350").pack(pady=10)
+            ctk.CTkLabel(self.elozmeny_gombok_kontener, text="Hiba a CSV olvasásakor.", text_color="#ef5350").pack(pady=10)
 
     def _beallitas_tab_felep(self, tab: Any) -> None:
         beallitas_keret = ctk.CTkFrame(tab, corner_radius=10, fg_color="#2b2b2b")
@@ -295,7 +319,7 @@ class DashboardTabs(ctk.CTkFrame):
             txt_ctrl = cast(Any, self.entry_hiba_leiras)
             problema_szoveg = str(txt_ctrl.get("1.0", "end")).strip()
             if not problema_szoveg or "ide részletesen írd le" in problema_szoveg:
-                messagebox.showerror("Helpdesk hiba", "Üres leírást nem küldhetsz be!")
+                messagebox.showerror("Helpdesk hiba", "Üres leírást nem küldéntél be!")
                 return
 
             fejleszto_email = "balint.papp@cegnev.hu"
@@ -375,8 +399,7 @@ class DashboardTabs(ctk.CTkFrame):
             if hasattr(self, 'fajl_label'):
                 cast(Any, self.fajl_label).configure(text=msg, text_color=color)
             
-            # UX AUTOMATIZÁLÁS: Sikeres feldolgozás esetén automatikusan betöltjük az XML-t az előnézeti szövegdobozba!
-            if "sikeres" in msg.lower() or "kész" in msg.lower() or "generálva" in msg.lower():
+            if "sikeres" in msg.lower() or "kész" in msg.lower() or "generálva" in msg.lower() or "xsd" in msg.lower():
                 from config import KIMENETI_XML
                 if os.path.exists(KIMENETI_XML) and hasattr(self, 'xml_elonezet'):
                     try:

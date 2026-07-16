@@ -166,9 +166,30 @@ def nav_sablon_analitika_df(lap_df: pd.DataFrame) -> Optional[pd.DataFrame]:
 def munkalap_tisztitasa(lap_df: pd.DataFrame) -> pd.DataFrame:
     """
     Megtisztítja a munkalapot a teljesen üres soroktól és oszlopoktól.
+    INTELLIGENS TUNING: Ha a táblázat humán leíró sorokkal kezdődik (mint a hivatalos NAV sablon),
+    automatikusan megkeresi a technikai mezőneveket (pl. lineNumber, sourceDocumentId) tartalmazó sort,
+    és előlépteti azt valódi oszlopfejléccé.
     """
     if lap_df.empty:
         return lap_df
+        
+    target_fields = {"sourcedocumentid", "taxpointdate", "taxbase", "taxamount", "linenumber"}
+    
+    # 1. Ellenőrizzük, hogy a jelenlegi fejléc már tartalmazza-e a technikai mezőket
+    current_cols = {str(c).strip().lower() for c in lap_df.columns}
+    if any(f in current_cols for f in target_fields):
+        return lap_df.dropna(how="all")
+        
+    # 2. Ha nem, átfésüljük az első 10 sort, megkeresve az igazi technikai lécet
+    for idx in range(min(10, len(lap_df))):
+        row_vals = [str(val).strip().lower() for val in lap_df.iloc[idx].values]
+        if any(f in row_vals for f in target_fields):
+            # Előléptetjük ezt a sort fejléccé, eldobva a felette lévő humán szövegeket
+            new_headers = [str(val).strip() for val in lap_df.iloc[idx].values]
+            cleaned_df = lap_df.iloc[idx + 1:].copy()
+            cleaned_df.columns = new_headers
+            return cleaned_df.dropna(how="all")
+            
     return lap_df.dropna(how="all")
 
 
