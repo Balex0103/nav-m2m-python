@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import logging
 import os
+import datetime
 from typing import Any, Callable, Optional, cast
 from tkinter import messagebox
 import customtkinter as ctk
@@ -143,32 +144,59 @@ class DashboardTabs(ctk.CTkFrame):
                     cast(Any, self.lbl_koma_value).configure(text="🟡 ELLENŐRZÉSRE VÁR (Szimulált üzemmód)", text_color="#F1C40F")
 
     def _hataridok_tab_felep(self, tab: Any) -> None:
-        import datetime
+        """Formailag az eredeti, letisztult CTkFrame kártyadizájnra hagyatkozó dinamikus határidő-naptár."""
+        ma = datetime.date.today()
+        kov_honap = ma.replace(day=28) + datetime.timedelta(days=4)
+        
+        huszadika_esedekesseg = datetime.date(kov_honap.year, kov_honap.month, 20)
+        eves_bevallasi_esedekesseg = datetime.date(2027, 5, 31) if ma.month > 5 else datetime.date(2026, 5, 31)
+
+        nap_huszadikaig = (huszadika_esedekesseg - ma).days
+        nap_evesig = (eves_bevallasi_esedekesseg - ma).days
+
         hatarido_keret = ctk.CTkFrame(tab, corner_radius=10, fg_color="#232323")
         hatarido_keret.pack(pady=10, padx=10, fill="x")
 
-        ctk.CTkLabel(hatarido_keret, text="📅 Jogszabályi ÁFA Bevallási Határidők", font=ctk.CTkFont(size=14, weight="bold"), text_color="#E74C3C").pack(pady=8, padx=15, anchor="w")
+        ctk.CTkLabel(
+            hatarido_keret, text="📅 Jogszabályi & Vállalati Adóbevallási Határidők", 
+            font=ctk.CTkFont(size=14, weight="bold"), text_color="#E74C3C"
+        ).pack(pady=(12, 6), padx=15, anchor="w")
 
-        ma = datetime.date.today()
-        kov_honap = ma.replace(day=28) + datetime.timedelta(days=4)
-        esedekesseg = datetime.date(kov_honap.year, kov_honap.month, 20)
-        hatra_van = (esedekesseg - ma).days
+        grid_keret = ctk.CTkFrame(hatarido_keret, fg_color="transparent")
+        grid_keret.pack(fill="x", padx=15, pady=8)
 
-        ctk.CTkLabel(hatarido_keret, text=f"A tárgyidőszaki adóbevallás és adóbefizetés törvényi határideje: {esedekesseg.strftime('%Y.%m.%d.')}\nHátralévő törvényes intézkedési idő: {hatra_van} nap.", font=ctk.CTkFont(size=12), justify="left").pack(pady=5, padx=15, anchor="w")
+        adonemek = [
+            ("Általános Forgalmi Adó (ÁFA)", "Havi", huszadika_esedekesseg, nap_huszadikaig),
+            ("Robin Hood Adó (Előleg)", "Havi", huszadika_esedekesseg, nap_huszadikaig),
+            ("Innovációs Járulék (Előleg)", "Negyedéves", huszadika_esedekesseg, nap_huszadikaig),
+            ("Társasági Adó (TAO Éves)", "Éves", eves_bevallasi_esedekesseg, nap_evesig),
+            ("Robin Hood Adó (Éves elszámolás)", "Éves", eves_bevallasi_esedekesseg, nap_evesig)
+        ]
+
+        ctk.CTkLabel(grid_keret, text="Adónem / Kötelezettség", font=ctk.CTkFont(size=11, weight="bold"), text_color="#888888").grid(row=0, column=0, sticky="w", pady=4, padx=5)
+        ctk.CTkLabel(grid_keret, text="Gyakoriság", font=ctk.CTkFont(size=11, weight="bold"), text_color="#888888").grid(row=0, column=1, sticky="w", pady=4, padx=20)
+        ctk.CTkLabel(grid_keret, text="Törvényi Határidő", font=ctk.CTkFont(size=11, weight="bold"), text_color="#888888").grid(row=0, column=2, sticky="w", pady=4, padx=20)
+        ctk.CTkLabel(grid_keret, text="Státusz / Hátralévő idő", font=ctk.CTkFont(size=11, weight="bold"), text_color="#888888").grid(row=0, column=3, sticky="w", pady=4, padx=20)
+
+        for idx, (nev, gyak, datum, napok) in enumerate(adonemek, start=1):
+            ctk.CTkLabel(grid_keret, text=nev, font=ctk.CTkFont(size=12, weight="bold"), text_color="#ffffff").grid(row=idx, column=0, sticky="w", pady=6, padx=5)
+            ctk.CTkLabel(grid_keret, text=gyak, font=ctk.CTkFont(size=12), text_color="#cccccc").grid(row=idx, column=1, sticky="w", pady=6, padx=20)
+            ctk.CTkLabel(grid_keret, text=datum.strftime('%Y.%m.%d.'), font=ctk.CTkFont(size=12), text_color="#5DADE2").grid(row=idx, column=2, sticky="w", pady=6, padx=20)
+            
+            szin = "#2ecc71" if napok > 10 else "#f1c40f" if napok > 3 else "#e74c3c"
+            ctk.CTkLabel(grid_keret, text=f"⏳ {napok} nap van hátra", font=ctk.CTkFont(size=12, weight="bold"), text_color=szin).grid(row=idx, column=3, sticky="w", pady=6, padx=20)
 
     def _elozmeny_tab_felep(self, tab: Any) -> None:
-        """Dinamikus NAV Kommunikációs Történet az új központi history_log.csv alapján."""
+        """Dinamikus NAV Kommunikációs Történet a központi history_log.csv alapján."""
         elozmeny_keret = ctk.CTkFrame(tab, fg_color="transparent")
         elozmeny_keret.pack(fill="both", expand=True, padx=10, pady=10)
 
-        # Bal oldali listázó sáv a bejegyzéseknek
         lista_keret = ctk.CTkFrame(elozmeny_keret, width=260, fg_color="#222222")
         lista_keret.pack(side="left", fill="y", padx=(0, 10))
         lista_keret.pack_propagate(False)
 
         ctk.CTkLabel(lista_keret, text="Tranzakciós naplók (CSV)", font=ctk.CTkFont(size=12, weight="bold")).pack(pady=5)
 
-        # Jobb oldali szöveges megtekintő ablak
         naplo_megtekinto = ctk.CTkTextbox(elozmeny_keret, font=ctk.CTkFont(size=11, family="Courier New"))
         naplo_megtekinto.pack(side="right", fill="both", expand=True)
         naplo_megtekinto.insert("0.0", "Kérlek, válassz ki egy tranzakciót a bal oldali sávból...")
@@ -202,7 +230,6 @@ class DashboardTabs(ctk.CTkFrame):
         try:
             tranzakciok = read_history(100)
             if tranzakciok:
-                # Időrendben visszafelé listázzuk, hogy a legfrissebb legyen legfelül
                 for row in reversed(tranzakciok):
                     ts = row.get("timestamp", "")
                     idopont = ts.split(" ")[1] if " " in ts else ts
@@ -216,7 +243,7 @@ class DashboardTabs(ctk.CTkFrame):
                     btn.pack(fill="x", padx=6, pady=2)
             else:
                 ctk.CTkLabel(lista_keret, text="Nincsenek mentett naplók.", text_color="gray").pack(pady=10)
-        except Exception as e:
+        except Exception:
             ctk.CTkLabel(lista_keret, text="Hiba a CSV olvasásakor.", text_color="#ef5350").pack(pady=10)
 
     def _beallitas_tab_felep(self, tab: Any) -> None:
@@ -347,6 +374,20 @@ class DashboardTabs(ctk.CTkFrame):
         def statusz_updater(msg: str, color: str) -> None:
             if hasattr(self, 'fajl_label'):
                 cast(Any, self.fajl_label).configure(text=msg, text_color=color)
+            
+            # UX AUTOMATIZÁLÁS: Sikeres feldolgozás esetén automatikusan betöltjük az XML-t az előnézeti szövegdobozba!
+            if "sikeres" in msg.lower() or "kész" in msg.lower() or "generálva" in msg.lower():
+                from config import KIMENETI_XML
+                if os.path.exists(KIMENETI_XML) and hasattr(self, 'xml_elonezet'):
+                    try:
+                        with open(KIMENETI_XML, "r", encoding="utf-8") as f:
+                            tartalom = f.read()
+                        cast(Any, self.xml_elonezet).configure(state="normal")
+                        cast(Any, self.xml_elonezet).delete("1.0", "end")
+                        cast(Any, self.xml_elonezet).insert("0.0", tartalom)
+                        cast(Any, self.xml_elonezet).configure(state="disabled")
+                    except Exception:
+                        pass
 
         def error_popup_wrapper(title: str, msg: str) -> None:
             messagebox.showerror(title, msg)

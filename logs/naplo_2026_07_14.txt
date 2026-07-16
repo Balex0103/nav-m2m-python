@@ -184,3 +184,31 @@ _tkinter.TclError
 [2026-07-14 13:51:07] ℹ️ [Szűrés] 'Analitika Adatok' munkalap kihagyva, mert nem teljes áfa analitika. Hiányzó oszlopok: Afa_Ertek, Netto_Ertek, Szamlaszam, Teljesites_Datuma
 [2026-07-14 13:51:07] ℹ️ [Szűrés] 'Értékek' munkalap kihagyva (nem áfa analitika).
 [2026-07-14 13:51:07] ❌ [HIBA] Nincs feldolgozható áfa munkalap az Excelben a szűrés után.
+[2026-07-14 16:34:55] 
+[2026-07-14 16:34:55] ------------------------------------------------------------
+[2026-07-14 16:34:55] [Kezdés] Feldolgozás indítása...
+[2026-07-14 16:34:55] [Környezet] Aktív környezet: TEST
+[2026-07-14 16:34:55] [Mappa] Figyelt mappa: /Users/balesz/NAV_M2M_Python/sap_export
+[2026-07-14 16:34:55] ✅ [Fájl] Megtalálva: 01_példa_fizetendő.xlsx
+[2026-07-14 16:34:55] [Beolvasás] Munkalapok beolvasása a memóriába...
+[2026-07-14 16:34:56] ℹ️ [Szűrés] 'Bevallás Fejadatok' munkalap fejadatként kezelve, nem tételes analitika.
+[2026-07-14 16:34:56] ℹ️ [Szűrés] 'Analitika Adatok' munkalap kihagyva, mert nem teljes áfa analitika. Hiányzó oszlopok: Afa_Ertek, Netto_Ertek, Szamlaszam, Teljesites_Datuma
+[2026-07-14 16:34:56] ℹ️ [Szűrés] 'Értékek' munkalap kihagyva (nem áfa analitika).
+[2026-07-14 16:34:56] ❌ [HIBA] Nincs feldolgozható áfa munkalap az Excelben a szűrés után.
+[2026-07-14 16:34:56] ❌ [KRITIKUS HIBA] 
+[2026-07-14 16:34:56] Traceback (most recent call last):
+  File "/Users/balesz/NAV_M2M_Python/gui/workflows.py", line 227, in feldolgozas_a_hatterben
+    show_error_popup("Adathiba", hiba)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/Users/balesz/NAV_M2M_Python/gui/dashboard_tabs.py", line 352, in error_popup_wrapper
+    messagebox.showerror(title, msg)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/tkinter/messagebox.py", line 98, in showerror
+    return _show(title, message, ERROR, OK, **options)
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/tkinter/messagebox.py", line 76, in _show
+    res = Message(**options).show()
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/tkinter/commondialog.py", line 45, in show
+    s = master.tk.call(self.command, *master._options(self.options))
+_tkinter.TclError
+
+[2026-07-14 16:35:08] ⚠️ Nincs még megtekinthető XML előnézet.

@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 import os
-from typing import Any, Optional
+from typing import Any, Optional, Dict, cast
 
 import pandas as pd
 
@@ -13,53 +13,67 @@ import pandas as pd
 def dataframe_balra_zart_szoveg(df: pd.DataFrame) -> str:
     """
     Formázza a DataFrame-et szigorúan balra zárt szövegként az előnézethez.
-    Karakterhossz-mátrixot épít, teljesen megkerülve a Pandas számokra vonatkozó jobbra igazítását.
+    Kombinálja a fejléceket és az adatsorokat egyetlen egységes mátrixszá,
+    és eltünteti a zavaró 'Unnamed:' feliratokat, így a többfejléces NAV sablonok
+    is tökéletesen, cellára pontosan és esztétikusan jelennek meg.
     """
     if df.empty:
         return "Nincs megjeleníthető adat."
-    
-    # Adatok megtisztítása és kényszerített szöveggé alakítása
-    temp_df = df.copy()
-    for col in temp_df.columns:
-        temp_df[col] = temp_df[col].astype(str).str.strip()
 
-    # Kiszámítjuk az oszlopok maximális szélességét (fejléc hossza vs cellatartalmak hossza)
-    col_widths = {}
-    for col in temp_df.columns:
-        max_val_len = temp_df[col].str.len().max()
-        val_len = int(max_val_len) if pd.notna(max_val_len) else 0
-        col_widths[col] = max(val_len, len(str(col)))
-
-    lines = []
+    all_rows: list[list[str]] = []
     
-    # 1. Fejléc sor generálása szigorú balra zárással, tiszta elválasztó karakterekkel
-    header_line = "   |   ".join(str(col).ljust(col_widths[col]) for col in temp_df.columns)
-    lines.append(header_line)
+    # Kiszűrjük az "Unnamed:" szövegeket a fejlécből, tiszta üres mezőket hagyva a helyükön
+    header_row = ["" if "Unnamed:" in str(col) else str(col).strip() for col in df.columns]
+    all_rows.append(header_row)
     
-    # 2. Vizuális elválasztó sáv
-    lines.append("-" * (len(header_line) + 2))
-
-    # 3. Adatsorok kényszerített balra igazítása
-    for _, row in temp_df.iterrows():
-        row_line = "   |   ".join(str(row[col]).ljust(col_widths[col]) for col in temp_df.columns)
+    # Hozzáadjuk az adatsorokat tiszta szövegként, kiküszöbölve a nan és null értékeket
+    for _, row in df.iterrows():
+        current_row = [
+            "" if pd.isna(val) or str(val).strip().lower() in ["nan", "none", "<na>"] 
+            else str(val).strip() 
+            for val in row
+        ]
+        all_rows.append(current_row)
+        
+    num_cols = len(header_row)
+    
+    # Oszlopok maximális valós szélességének kiszámítása az igazításhoz
+    col_widths: Dict[int, int] = {i: 0 for i in range(num_cols)}
+    for row in all_rows:
+        for i in range(num_cols):
+            if i < len(row):
+                col_widths[i] = max(col_widths[i], len(row[i]))
+                
+    lines: list[str] = []
+    for idx, row in enumerate(all_rows):
+        row_line = "   |   ".join(row[i].ljust(col_widths[i]) for i in range(num_cols))
         lines.append(row_line)
-
+        
+        # Vizuális dekorációs elválasztó sáv az első sor után
+        if idx == 0:
+            lines.append("-" * len(row_line))
+            
     return "\n".join(lines)
 
 
 def fajl_beolvasasa(fajl_utvonal: str) -> dict[str, pd.DataFrame]:
     """
     Beolvassa a megadott fájlt (Excel vagy CSV) és visszaadja a munkalapokat egy szótárban.
+    Az előnézet sebessége miatt csak az első 50 sort rántjuk be.
     """
     if not os.path.exists(fajl_utvonal):
         return {}
     
-    if fajl_utvonal.endswith('.csv'):
-        df = pd.read_csv(fajl_utvonal)
-        return {os.path.basename(fajl_utvonal): df}
-    else:
-        # type: ignore direktívával elnémítjuk a pandas strict típusellenőrzési vakriasztását
-        return pd.read_excel(fajl_utvonal, sheet_name=None)  # type: ignore
+    try:
+        if fajl_utvonal.endswith('.csv'):
+            df = pd.read_csv(fajl_utvonal, nrows=50)
+            return {os.path.basename(fajl_utvonal): df}
+        else:
+            # Explicit openpyxl motor és 50 soros korlát a villámgyors Windows-futáshoz
+            sheets = pd.read_excel(fajl_utvonal, sheet_name=None, engine='openpyxl', nrows=50)
+            return cast(dict[str, pd.DataFrame], sheets)
+    except Exception:
+        return {}
 
 
 def peri_fejadatok_kinyerese(lapok_dict: dict[str, pd.DataFrame]) -> dict[str, Any]:
